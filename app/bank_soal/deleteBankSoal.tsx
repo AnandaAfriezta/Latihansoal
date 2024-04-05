@@ -53,7 +53,7 @@ export default function DeleteBankSoal(props: Props) {
 
       <div className="modal">
         <div className="modal-box bg-slate-100">
-          <h3 className="font-bold text-lg text-gray-800">
+          <h3 className="font-bold text-lg text-gray-800 mb-8">
             Are you sure to delete {props.nama_banksoal} ?
           </h3>
           <div className="w-full flex gap-2 justify-end">
