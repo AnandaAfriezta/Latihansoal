@@ -24,7 +24,7 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
 
   const fetchData = async (id_latihan_soal: number) => {
     const res = await fetch(
-      `http://192.168.1.19:3000/ujian/${id_latihan_soal}/get-all-soal`,
+      `http://192.168.1.15:3000/ujian/${id_latihan_soal}/get-all-soal`,
       {
         method: "GET",
         cache: "no-store",

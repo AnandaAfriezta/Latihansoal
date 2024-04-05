@@ -13,9 +13,9 @@ type Props = {
 
 export default function CardDetailBankSoal(props: Props) {
   return (
-    <div className="collapse collapse-plus bg-white mb-4 p-2">
+    <div className="collapse collapse-arrow bg-white rounded-lg border border-gray-300 p-1 w-full mb-8">
       <input type="checkbox" name="my-accordion-1" />
-      <div className="collapse-title text-xl font-semibold text-gray-800">
+      <div className="collapse-title text-xl font-semibold text-black text-overflow">
         {props.content}
       </div>
       <div className="w-full collapse-content">

@@ -22,9 +22,10 @@ type Props = {
   id_latihan_soal: number;
   data: Data[];
 };
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function fetchLatihanSoal() {
-  const res = await fetch("http://10.191.1.92:3000/latihansoal/", {
+  const res = await fetch(`${apiUrl}/latihansoal`, {
     method: "GET",
     cache: "no-store",
   });
@@ -46,7 +47,7 @@ const Home: React.FC<Props> = ({ data }) => {
 
   const handleAddLatsol = async (formData: any) => {
     try {
-      const res = await fetch("http://10.191.1.92:3000/latihansoal/add-latsol", {
+      const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,9 +75,6 @@ const Home: React.FC<Props> = ({ data }) => {
             <h1 className="font-bold text-primary text-4xl mb-4 cursor-pointer hover:underline">
               Latihan Soal
             </h1>
-            <div className="py-2">
-              <AddLatsol onSubmit={handleAddLatsol} />
-            </div>
           </div>
           <div className="w-full mb-8">
             <SearchLatsol />
