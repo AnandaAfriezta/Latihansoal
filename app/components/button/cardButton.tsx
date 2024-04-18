@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +13,13 @@ const CardButton: React.FC<{ id_latihan_soal: number }> = ({
   return (
     <button
       onClick={handleClick}
-      className="btn btn-accent btn-block text-white"
+      className="btn btn-accent text-white"
+      style={{
+        padding: "10px 30px",
+        fontSize: "14px", 
+        width: "100px", 
+        height: "20px",  
+      }}
     >
       Mulai
     </button>

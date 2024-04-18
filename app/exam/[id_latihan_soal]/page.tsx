@@ -11,7 +11,7 @@ interface detailUjianProps {
     nama_latihansoal: string;
   };
 }
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
   const { id_latihan_soal } = params;
   const { nama_latihansoal } = params;
@@ -24,7 +24,7 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
 
   const fetchData = async (id_latihan_soal: number) => {
     const res = await fetch(
-      `http://192.168.1.19:3000/ujian/${id_latihan_soal}/get-all-soal`,
+      `${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`,
       {
         method: "GET",
         cache: "no-store",
