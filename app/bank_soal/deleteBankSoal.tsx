@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Snackbar } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Image from "next/image";
 
 type Props = {
   id_bank_soal: number;
@@ -20,7 +21,7 @@ export default function DeleteBankSoal(props: Props) {
     setIsMutating(true);
 
     await fetch(
-      `http://192.168.1.19:3000/banksoal/delete-banksoal/${id_bank_soal}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/banksoal/delete-banksoal/${id_bank_soal}`,
       {
         method: "DELETE",
         cache: "no-store",
@@ -39,9 +40,9 @@ export default function DeleteBankSoal(props: Props) {
 
   return (
     <div>
-      <button className="btn btn-error text-white" onClick={handleChange}>
-        Delete
-      </button>
+      <div onClick={handleChange}>
+        <Image src="/delete.png" alt="delete" width={16} height={16}/>
+      </div>
 
       <input
         type="checkbox"
@@ -52,22 +53,24 @@ export default function DeleteBankSoal(props: Props) {
 
       <div className="modal">
         <div className="modal-box bg-slate-100">
-          <h3 className="font-bold text-lg text-gray-800">
+          <h3 className="font-bold text-lg text-gray-800 mb-8">
             Are you sure to delete {props.nama_banksoal} ?
           </h3>
-          <div className="modal-action">
+          <div className="w-full flex gap-2 justify-end">
             <button
               type="button"
-              className="btn btn-outline text-error hover:text-white hover:bg-error"
+              className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black font-semibold text-md"
+              style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
               onClick={handleChange}
             >
-              Close
+              batal
             </button>
             {!isMutating ? (
               <button
                 type="button"
                 onClick={() => handleDelete(props.id_bank_soal)}
-                className="btn btn-error text-white"
+                className="bg-[#FF4343] px-3 py-1 rounded-md text-white font-semibold text-md"
+                style={{ boxShadow: "0 3px 0 0 #BC3434" }}
               >
                 Delete
               </button>

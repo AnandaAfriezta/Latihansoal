@@ -47,7 +47,7 @@ const Home: React.FC<Props> = ({ data }) => {
 
   const handleAddLatsol = async (formData: any) => {
     try {
-      const res = await fetch("http://10.191.1.92:3000/latihansoal/add-latsol", {
+      const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

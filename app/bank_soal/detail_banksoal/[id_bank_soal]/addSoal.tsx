@@ -111,10 +111,11 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   return (
     <div>
       <button
-        className="btn btn-accent text-white w-[80px]"
+        className="text-white w-full bg-[#5CB85C] py-3 rounded-lg text-md font-semibold mb-8 flex justify-center items-center"
+        style={{ boxShadow: "0 3px 0 0 #51656A" }}
         onClick={handleChange}
       >
-        Add
+        <span className="text-md font-semibold mr-2">+</span> Tambah Soal
       </button>
       <input
         type="checkbox"

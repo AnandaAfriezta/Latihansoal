@@ -6,3 +6,12 @@
 div {
     background-color: slate-100;
 }
+@media screen and (max-width: 540px) {
+    .text-overflow {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 18em; 
+    }
+  }
+  
