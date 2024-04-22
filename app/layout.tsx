@@ -5,8 +5,8 @@ import './globals.css'
 const nunito = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Belajar lebih mudah dan menyenangkan',
+  title: 'dashboard',
+  description: '',
 }
 
 export default function RootLayout({
