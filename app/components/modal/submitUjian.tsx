@@ -36,13 +36,15 @@ export default function SubmitUjian(props: Props) {
   return (
     <div>
       <button
-        className={`btn btn-accent text-white btn-block flex flex-col ${
+        className={`bg-[#5CB85C] px-6 py-3 rounded-xl text-white font-medium text-md ${
           isMutating || props.isDisabled ? "disabled" : ""
         }`}
         onClick={handleChange}
-        disabled={isMutating || props.isDisabled}
+        style={{
+          boxShadow: "0 3px 0 0 #51656A",
+        }}
       >
-        Submit
+        Selesai
       </button>
 
       <input
@@ -60,14 +62,19 @@ export default function SubmitUjian(props: Props) {
           <div className="modal-action">
             <button
               type="button"
-              className="btn btn-outline text-accent hover:text-white hover:bg-accent"
+              className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black font-semibold text-md"
+              style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
               onClick={handleChange}
             >
               Close
             </button>
             {!isMutating ? (
               <Link href={"/exam/result"}>
-                <button type="button" className="btn btn-accent text-white">
+                <button
+                  type="button"
+                  className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
+                  style={{ boxShadow: "0 3px 0 0 #237D3E" }}
+                >
                   Submit
                 </button>
               </Link>

@@ -1,12 +1,11 @@
-'use client';
-
-import React from 'react';
+// Import React
+import React from "react";
 
 interface AnswerObject {
   id_jawaban: number;
   konten_jawaban: string;
   isSelected: boolean;
-  onAnswerClick: () => void;
+  onAnswerClick: (idJawaban: number) => void;
 }
 
 const DetailAnswer: React.FC<AnswerObject> = ({
@@ -15,18 +14,24 @@ const DetailAnswer: React.FC<AnswerObject> = ({
   isSelected,
   onAnswerClick,
 }) => {
+
   return (
     <div className="w-full mb-2">
-      <button
-        onClick={onAnswerClick}
-        className={`btn w-full btn-ghost focus:bg-accent justify-start focus:text-white ${
-          isSelected ? 'bg-accent text-white' : ''
-        }`}
+      <label
+        className={`flex items-center bg-white rounded-xl border border-[#999CA1] py-2 px-4 text-black justify-between w-full mb-2 `}
       >
-        {konten_jawaban}
-      </button>
+
+        <input
+          type="radio"
+          onClick={() => onAnswerClick(id_jawaban)}
+          checked={isSelected}
+          className="custom-radio"
+        />
+        <span className="flex-grow ml-5">{konten_jawaban}</span>
+      </label>
     </div>
   );
 };
 
+// Export komponen DetailAnswer
 export default DetailAnswer;

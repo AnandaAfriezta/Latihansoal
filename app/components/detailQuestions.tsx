@@ -31,7 +31,6 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   };
 
   const getSelectedAnswerIndex = () => {
-    // Mendapatkan indeks jawaban yang dipilih untuk soal ini
     return selectedAnswers[id_soal - 1];
   };
 
