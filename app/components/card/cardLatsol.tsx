@@ -6,8 +6,8 @@ import EditButton from "../button/editButton";
 import DeleteButton from "../button/deleteButtonLatsol";
 
 type Tag = {
-  id_tag: number;
-  nama_tag: string;
+  id_tags: number;
+  nama_tags: string;
 };
 
 type Data = {

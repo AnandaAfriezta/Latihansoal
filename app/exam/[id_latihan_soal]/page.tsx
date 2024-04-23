@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import DetailQuestions from "@/app/components/detailQuestions";
 import Link from "next/link";
 import SubmitUjian from "@/app/components/modal/submitUjian";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Image from "next/image";
 
 interface detailUjianProps {
   params: {
@@ -21,15 +23,17 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
   const [data, setData] = useState([]);
   const [duration, setDuration] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
 
   const fetchData = async (id_latihan_soal: number) => {
-    const res = await fetch(
-      `${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`,
-      {
-        method: "GET",
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
+      method: "GET",
+      cache: "no-store",
+    });
     const result = await res.json();
 
     if (result.success) {
@@ -91,33 +95,52 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
   };
 
   return (
-    <div className="w-full h-screen h-full bg-slate-100 py-8 justify-center items-center flex">
-      <div className="w-full h-s max-w-screen-md mx-auto px-4">
-        <div className="flex w-full max-w-screen-md justify-between absolute top-8 left-0 right-0 px-4 mx-auto">
-          <div className="grid gap-2 grid-cols-10">
-            {pageNumbers.map((pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => setStartIndex((pageNumber - 1) * itemsPerPage)}
-                className={`btn btn-ghost hover:bg-accent hover:text-white gap-y-2 ${
-                  (pageNumber - 1) * itemsPerPage === startIndex
-                    ? "bg-accent text-white"
-                    : "bg-white text-gray-800"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
-          </div>
+    <div className="w-full h-screen h-full bg-white py-8">
+      <div className="w-full max-w-screen-md mx-auto px-4">
+        <div
+          className="flex w-full items-center justify-between mt-3 mb-6 pb-4"
+          style={{ boxShadow: "0 2px 0 0 #CACACA40" }}
+        >
+          <Link href={"/"}>
+            <ArrowBackIosNewIcon className="text-black" />
+          </Link>
           <div>
             <button
-              className="btn btn-accent mx-1 bg-accent text-white focused"
+              className="bg-[#9E62CE] px-3 py-1 rounded-md text-white font-semibold text-md"
               disabled={remainingTime <= 0}
             >
               {formatTime(remainingTime)}
             </button>
           </div>
+          <div className="relative">
+            <Image
+              src="/tab.png"
+              alt="tab"
+              width={20}
+              height={20}
+              onClick={togglePopup}
+            />
+            {isPopupOpen && (
+              <div className="absolute top-8 right-0 bg-white shadow-md rounded-md">
+                {pageNumbers.map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    className="block px-3 py-1 hover:bg-gray-200 focus:bg-gray-200"
+                    onClick={() =>
+                      setStartIndex((pageNumber - 1) * itemsPerPage)
+                    }
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+        <div className="text-black font-semibold mb-8">
+          Soal {startIndex + 1} dari {data.length}
+        </div>
+
         <div className="flex flex-col gap-4 items-center w-full">
           {data
             .slice(startIndex, startIndex + itemsPerPage)
@@ -131,31 +154,34 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
             ))}
         </div>
 
-        <div className="flex flex-col mt-4 gap-4 absolute bottom-0 right-0 left-0 w-full">
+        <div className="flex flex-col mt-4 gap-4 absolute bottom-8 right-0 left-0 w-full">
           <div className="flex w-full justify-between max-w-screen-md mx-auto px-4">
             <button
               onClick={handleBack}
               disabled={isAtStart}
-              className="btn btn-accent text-white"
-              style={{ visibility: isAtStart ? "hidden" : "visible" }}
+              className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
+              style={{
+                visibility: isAtStart ? "hidden" : "visible",
+                boxShadow: "0 3px 0 0 #B1A6A6",
+              }}
             >
-              Prev
+              &lt;
             </button>
+            <div>
+              <SubmitUjian {...params} isDisabled={!isAtEnd} />
+            </div>
             <button
               onClick={handleNext}
               disabled={isAtEnd}
-              className="btn btn-accent text-white"
-              style={{ visibility: isAtEnd ? "hidden" : "visible" }}
+              className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
+              style={{
+                visibility: isAtEnd ? "hidden" : "visible",
+                boxShadow: "0 3px 0 0 #B1A6A6",
+              }}
             >
-              Next
+              &gt;
             </button>
           </div>
-          <div>
-          <SubmitUjian
-            {...params}
-            isDisabled={!isAtEnd}
-          />
-        </div>
         </div>
       </div>
     </div>

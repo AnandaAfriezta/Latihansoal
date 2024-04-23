@@ -1,14 +1,19 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 
 interface ResultProps {
   correctCount: number;
   wrongCount: number;
   nama_latihansoal: string;
-  waktu_pengerjaan: string; 
+  waktu_pengerjaan: string;
 }
 
-const Result: React.FC<ResultProps> = ({ correctCount, wrongCount, nama_latihansoal, waktu_pengerjaan }) => {
+const Result: React.FC<ResultProps> = ({
+  correctCount,
+  wrongCount,
+  nama_latihansoal,
+  waktu_pengerjaan,
+}) => {
   return (
     <div className='w-screen h-screen bg-slate-100'>
       <div className='flex justify-center bg-slate-100'>
@@ -63,6 +68,6 @@ const Result: React.FC<ResultProps> = ({ correctCount, wrongCount, nama_latihans
       </div>
     </div>
   );
-}
+};
 
 export default Result;
