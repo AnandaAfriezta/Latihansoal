@@ -1,21 +1,23 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import DetailQuestions from "@/app/components/detailQuestions";
-import Link from "next/link";
-import SubmitUjian from "@/app/components/modal/submitUjian";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import Image from "next/image";
-import Cookies from "js-cookie";
+import React, { useEffect, useState } from 'react';
+import DetailQuestions from '@/app/components/detailQuestions';
+import Link from 'next/link';
+import SubmitUjian from '@/app/components/modal/submitUjian';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import Image from 'next/image';
+import Cookies from 'js-cookie';
 
-interface detailUjianProps {
+interface DetailUjianProps {
   params: {
     id_latihan_soal: number;
     nama_latihansoal: string;
   };
 }
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const { id_latihan_soal } = params;
   const { nama_latihansoal } = params;
 
@@ -31,17 +33,20 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
   };
 
   const fetchData = async (id_latihan_soal: number) => {
-    const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
-      method: "GET",
-      cache: "no-store",
-    });
-    const result = await res.json();
-    console.log(Cookies.get("user"));
+    try {
+      const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
+        method: 'GET',
+        cache: 'no-store',
+      });
+      const result = await res.json();
 
-    if (result.success) {
-      setData(result.data.soalData);
-      setDuration(result.data.durasi * 60);
-      setRemainingTime(result.data.durasi * 60);
+      if (result.success) {
+        setData(result.data.soalData);
+        setDuration(result.data.durasi * 60);
+        setRemainingTime(result.data.durasi * 60);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -74,26 +79,10 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
   const isAtStart = startIndex === 0;
   const isAtEnd = startIndex + itemsPerPage >= data.length;
 
-  const calculatePageNumbers = () => {
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    const currentPage = Math.floor(startIndex / itemsPerPage) + 1;
-
-    const pageRange = 10;
-    const startPage = Math.max(1, currentPage - Math.floor(pageRange / 1));
-    const endPage = Math.min(totalPages, startPage + pageRange - 1);
-
-    return Array.from(
-      { length: endPage - startPage + 1 },
-      (_, index) => startPage + index
-    );
-  };
-
-  const pageNumbers = calculatePageNumbers();
-
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
   return (
@@ -101,10 +90,10 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
       <div className="w-full max-w-screen-md mx-auto px-4">
         <div
           className="flex w-full items-center justify-between mt-3 mb-6 pb-4"
-          style={{ boxShadow: "0 2px 0 0 #CACACA40" }}
+          style={{ boxShadow: '0 2px 0 0 #CACACA40' }}
         >
-          <Link href={"/"}>
-            <ArrowBackIosNewIcon className="text-black" />
+          <Link href="/">
+            <ArrowBackIosNewIcon className="text-black cursor-pointer" />
           </Link>
           <div>
             <button
@@ -121,18 +110,17 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
               width={20}
               height={20}
               onClick={togglePopup}
+              className="cursor-pointer"
             />
             {isPopupOpen && (
               <div className="absolute top-8 right-0 bg-white shadow-md rounded-md">
-                {pageNumbers.map((pageNumber) => (
+                {Array.from({ length: Math.ceil(data.length / itemsPerPage) }).map((_, index) => (
                   <button
-                    key={pageNumber}
+                    key={index}
                     className="block px-3 py-1 hover:bg-gray-200 focus:bg-gray-200"
-                    onClick={() =>
-                      setStartIndex((pageNumber - 1) * itemsPerPage)
-                    }
+                    onClick={() => setStartIndex(index * itemsPerPage)}
                   >
-                    {pageNumber}
+                    {index + 1}
                   </button>
                 ))}
               </div>
@@ -144,16 +132,14 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
         </div>
 
         <div className="flex flex-col gap-4 items-center w-full">
-          {data
-            .slice(startIndex, startIndex + itemsPerPage)
-            .map((item: any, index: number) => (
-              <DetailQuestions
-                key={index}
-                id_soal={item.id_soal}
-                konten_soal={item.konten_soal}
-                jawaban={item.jawaban}
-              />
-            ))}
+          {data.slice(startIndex, startIndex + itemsPerPage).map((item: any, index: number) => (
+            <DetailQuestions
+              key={index}
+              id_soal={item.id_soal}
+              konten_soal={item.konten_soal}
+              jawaban={item.jawaban}
+              id_latihan_soal={params.id_latihan_soal}/>
+          ))}
         </div>
 
         <div className="flex flex-col mt-4 gap-4 absolute bottom-8 right-0 left-0 w-full">
@@ -163,8 +149,8 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
               disabled={isAtStart}
               className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
               style={{
-                visibility: isAtStart ? "hidden" : "visible",
-                boxShadow: "0 3px 0 0 #B1A6A6",
+                visibility: isAtStart ? 'hidden' : 'visible',
+                boxShadow: '0 3px 0 0 #B1A6A6',
               }}
             >
               &lt;
@@ -177,8 +163,8 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
               disabled={isAtEnd}
               className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
               style={{
-                visibility: isAtEnd ? "hidden" : "visible",
-                boxShadow: "0 3px 0 0 #B1A6A6",
+                visibility: isAtEnd ? 'hidden' : 'visible',
+                boxShadow: '0 3px 0 0 #B1A6A6',
               }}
             >
               &gt;
