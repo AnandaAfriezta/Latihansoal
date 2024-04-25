@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+// import cardDetailresult from "./components/card/cardDetailresult";
+
 
 interface ResultProps {
   correctCount: number;
@@ -68,4 +70,6 @@ const Result: React.FC<ResultProps> = ({
   );
 };
 
+{/* <cardDetailresult /> */}
+ 
 export default Result;
