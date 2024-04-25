@@ -6,6 +6,7 @@ import Link from "next/link";
 import SubmitUjian from "@/app/components/modal/submitUjian";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface detailUjianProps {
   params: {
@@ -35,6 +36,7 @@ const ExamDetail: React.FC<detailUjianProps> = ({ params }) => {
       cache: "no-store",
     });
     const result = await res.json();
+    console.log(Cookies.get("user"));
 
     if (result.success) {
       setData(result.data.soalData);
