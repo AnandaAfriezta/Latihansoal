@@ -30,7 +30,10 @@ const SearchLatsol = () => {
           placeholder="search..."
         />
       </label>
-      <button className="join-item btn btn-accent text-white">search</button>
+      <button className="join-item btn btn-accent text-white"
+       style={{
+        backgroundColor: "#5CB85C"
+      }}>search</button>
     </form>
   );
 };

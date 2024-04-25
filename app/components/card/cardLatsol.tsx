@@ -20,7 +20,7 @@ type Data = {
 export default function CardLatsol(props: Data) {
   return (
     <div className="max-w-screen-md bg-white rounded-lg border border-gray-300 p-4 flex flex-col w-full mb-8">
-      <h1 className="text-[18px] font-semibold text-black text-overflow mb-2 hover:underline">
+      <h1 className="text-[20px] font-semibold text-black text-overflow mb-2 hover:underline">
         {props.nama_latihansoal}
       </h1>
       <div className="flex items-center mb-4">

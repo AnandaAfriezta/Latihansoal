@@ -19,10 +19,8 @@ const Result: React.FC<ResultProps> = ({
       <div className='flex justify-center bg-slate-100'>
         <div className='bg-white p-8 rounded-xl shadow-md'>
           <h1 className='text-2xl font-semibold mb-3 text-black'>Bahasa Inggris Simak UI</h1>
-          <div className='circle'>
             <h2 className='text-lg font-bold  text-#A8A3A3 text-center'>Nilai:</h2>
             <h2 className='text-2xl font-bold  text-black text-center'>100%</h2>
-          </div>
           <div className="flex justify-between items-center">
             <div className='text-black font-bold flex items-center'>
             <Image

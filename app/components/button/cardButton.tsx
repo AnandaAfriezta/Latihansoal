@@ -16,9 +16,11 @@ const CardButton: React.FC<{ id_latihan_soal: number }> = ({
       className="btn btn-accent text-white"
       style={{
         padding: "10px 30px",
-        fontSize: "16px", 
-        width: "80px", 
-        height: "20px",  
+        fontSize: "16px",
+        width: "80px",
+        height: "20px",
+        boxShadow: "0 3px 0 0 #237D3E",
+        backgroundColor: "#5CB85C"
       }}
     >
       Mulai
