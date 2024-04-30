@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-// import cardDetailresult from "./components/card/cardDetailresult";
-
+import CardDetailresult from "@/app/components/card/cardDetailresult";
 
 interface ResultProps {
   correctCount: number;
@@ -21,11 +20,11 @@ const Result: React.FC<ResultProps> = ({
       <div className='flex justify-center bg-slate-100'>
         <div className='bg-white p-8 rounded-xl shadow-md'>
           <h1 className='text-2xl font-semibold mb-3 text-black'>Bahasa Inggris Simak UI</h1>
-            <h2 className='text-lg font-bold  text-#A8A3A3 text-center'>Nilai:</h2>
-            <h2 className='text-2xl font-bold  text-black text-center'>100%</h2>
+          <h2 className='text-lg font-bold  text-#A8A3A3 text-center'>Nilai:</h2>
+          <h2 className='text-2xl font-bold  text-black text-center'>100%</h2>
           <div className="flex justify-between items-center">
             <div className='text-black font-bold flex items-center'>
-            <Image
+              <Image
                 src={"/centang.png"}
                 width={16}
                 height={16}
@@ -35,7 +34,7 @@ const Result: React.FC<ResultProps> = ({
               <p>8 {correctCount}</p>
             </div>
             <div className='text-black font-bold  flex items-center'>
-            <Image
+              <Image
                 src={"/silang.png"}
                 width={16}
                 height={16}
@@ -50,7 +49,7 @@ const Result: React.FC<ResultProps> = ({
               <p>Benar {correctCount}</p>
             </div>
             <div className='text-black flex items-center'>
-              <p>Salah{wrongCount}</p>
+              <p>Salah {wrongCount}</p>
             </div>
           </div>
           <div className="flex items-center justify-center  text-center"> 
@@ -66,10 +65,12 @@ const Result: React.FC<ResultProps> = ({
           <h2 className='text-lg  text-black text-center'>waktu pengerjaan</h2>
         </div>
       </div>
+      {/* Menambahkan ruang di bawah ini */}
+      <div className="mt-10">
+        <CardDetailresult id={0} content={""} explain={""} jawaban={[]} />
+      </div>
     </div>
   );
 };
 
-{/* <cardDetailresult /> */}
- 
 export default Result;

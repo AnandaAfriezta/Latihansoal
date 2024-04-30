@@ -30,10 +30,18 @@ const SearchLatsol = () => {
           placeholder="search..."
         />
       </label>
-      <button className="join-item btn btn-accent text-white"
+      <button type="submit" className="join-item btn btn-accent text-white relative"
        style={{
-        backgroundColor: "#5CB85C"
-      }}>search</button>
+        backgroundColor: "#7D9FA8"
+      }}>
+        <Image
+          src="/search1.png"
+          alt="Search"
+          width={26}
+          height={26}
+          layout="fixed"
+        />
+      </button>
     </form>
   );
 };
