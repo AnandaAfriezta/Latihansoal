@@ -34,10 +34,27 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
 
   const fetchData = async (id_latihan_soal: number) => {
     try {
+      const userCookie = Cookies.get("user");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
+
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
       const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
         method: 'GET',
         cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        }
       });
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
       const result = await res.json();
 
       if (result.success) {

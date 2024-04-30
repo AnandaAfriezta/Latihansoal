@@ -15,13 +15,15 @@ export default function DeleteBankSoal(props: Props) {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
   const router = useRouter();
 
   async function handleDelete(id_bank_soal: number) {
     setIsMutating(true);
 
     await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/banksoal/delete-banksoal/${id_bank_soal}`,
+      `${apiUrl}/banksoal/delete-banksoal/${id_bank_soal}`,
       {
         method: "DELETE",
         cache: "no-store",
