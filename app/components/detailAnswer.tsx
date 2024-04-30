@@ -2,6 +2,8 @@
 import React from "react";
 import Cookies from "js-cookie";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
 interface AnswerObject {
   id_latihan_soal: number;
   id_jawaban: number;
@@ -31,7 +33,7 @@ const DetailAnswer: React.FC<AnswerObject> = ({
       }
 
       const res = await fetch(
-        `http://192.168.1.15:3000/ujian/${id_latihan_soal}/submit-jawaban`,
+        `${apiUrl}/ujian/${id_latihan_soal}/submit-jawaban`,
         {
           method: "POST",
           headers: {

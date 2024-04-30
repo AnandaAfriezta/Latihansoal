@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import SearchLatsol from "./components/searchLatsol";
 import CardLatsol from "./components/card/cardLatsol";
 import AddLatsol from "./components/modal/addLatsol";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Image from "next/image";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Tag = {
   id_tag: number;
@@ -34,9 +38,17 @@ async function fetchLatihanSoal() {
 }
 
 const Home: React.FC<Props> = ({ data }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [latihanSoal, setLatihanSoal] = React.useState<Data[]>([]);
+  const router = useRouter();
 
   React.useEffect(() => {
+    const userCookies = Cookies.get("user");
+    if (userCookies) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
     const fetchData = async () => {
       const data = await fetchLatihanSoal();
       setLatihanSoal(data);
@@ -44,6 +56,14 @@ const Home: React.FC<Props> = ({ data }) => {
 
     fetchData();
   }, []);
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
+    if (confirmLogout) {
+      Cookies.remove("user");
+      setIsLoggedIn(false);
+    }
+  };
 
   const handleAddLatsol = async (formData: any) => {
     try {
@@ -69,16 +89,43 @@ const Home: React.FC<Props> = ({ data }) => {
 
   return (
     <main>
-      <div className="w-full bg-slate-100 py-8">
+      <div className="w-full bg-white py-8">
         <div className="w-full max-w-screen-md mx-auto px-4">
-          <div className="flex justify-between items-center ">
-            <h1 className="font-bold text-primary text-4xl mb-4 cursor-pointer hover:underline">
+          <div className="flex w-full items-center justify-between mt-3 mb-12">
+            <Link href={"/"}>
+              <ArrowBackIosNewIcon className="text-black" />
+            </Link>
+            <h1 className="font-bold text-black text-[20px] cursor-pointer hover:underline">
               Latihan Soal
             </h1>
+            <div className="w-8 h-8 relative rounded-full mr-4">
+              {/* Periksa apakah user sudah login */}
+              {isLoggedIn ? (
+                // Jika sudah login, tampilkan avatar
+                <Image
+                  src="/avatar.png"
+                  alt="Avatar"
+                  layout="fill"
+                  className="rounded-full cursor-pointer"
+                  onClick={handleLogout}
+                />
+              ) : (
+                <p
+                  className="text-[#31B057] font-bold cursor-pointer hover:underline"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </p>
+              )}
+            </div>
           </div>
-          <div className="w-full mb-8">
-            <SearchLatsol />
-          </div>
+          <form className="w-full">
+            <input
+              type="text"
+              placeholder="Ayo cari Latihan soal soalmu..."
+              className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
+            />
+          </form>
           {latihanSoal.map((item: Data, index: number) => (
             <CardLatsol
               key={index}

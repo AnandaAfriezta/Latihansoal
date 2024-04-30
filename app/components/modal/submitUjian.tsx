@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 type Props = {
   id_latihan_soal: number;
@@ -13,20 +14,50 @@ type Props = {
 export default function SubmitUjian(props: Props) {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-
   const router = useRouter();
+  
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
   async function handleSubmit(id_latihan_soal: number) {
     setIsMutating(true);
 
-    await fetch(`http://10.28.1.92:3000/latihansoal/${id_latihan_soal}`, {
-      method: "GET",
-      cache: "no-store",
-    });
+    try {
+      const userCookie = Cookies.get("user");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
 
-    setIsMutating(false);
-    router.refresh();
-    setModal(false);
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      const res = await fetch(
+        `${apiUrl}/ujian/${id_latihan_soal}/nilai`,
+        {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to submit answer.");
+      }
+
+      // Set cookie here if needed
+      Cookies.set("submitted", "true");
+
+      router.refresh();
+      setModal(false);
+    } catch (error: any) {
+      console.error("Error submitting answer:", error.message);
+    } finally {
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {
@@ -69,11 +100,12 @@ export default function SubmitUjian(props: Props) {
               Close
             </button>
             {!isMutating ? (
-              <Link href={"/exam/result"}>
+              <Link href={`/exam/${props.id_latihan_soal}/result`}>
                 <button
                   type="button"
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
                   style={{ boxShadow: "0 3px 0 0 #237D3E" }}
+                  onClick={() => handleSubmit(props.id_latihan_soal)}
                 >
                   Submit
                 </button>
