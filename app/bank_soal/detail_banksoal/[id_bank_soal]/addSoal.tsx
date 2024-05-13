@@ -135,7 +135,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                   type="text"
                   value={konten_soal}
                   onChange={(e) => setKontenSoal(e.target.value)}
-                  className="input w-full input-bordered bg-slate-200 text-slate-800"
+                  className="input bg-white rounded-lg border border-gray-300 p-1 w-full"
                   placeholder="Masukkan Soal"
                 />
               ) : (
@@ -149,26 +149,24 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
             <div className="form-control">
               <label className="label font-bold text-gray-800">Jawaban</label>
               {jawabanList.map((jawaban, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="jawaban_benar"
-                    value={index.toString()}
-                    checked={jawaban.jawaban_benar === "1"}
-                    onChange={(e) =>
-                      handleJawabanBenarChange(index, e.target.value)
-                    }
-                    className="checkbox checkbox-accent"
-                  />
-                  <input
-                    type="text"
-                    value={jawaban.konten_jawaban}
-                    onChange={(e) => handleJawabanChange(index, e.target.value)}
-                    className="input w-full input-bordered bg-slate-200 text-slate-800"
-                    placeholder={`Masukkan Jawaban ${index + 1}`}
-                  />
-                </div>
-              ))}
+  <div key={index} className="flex items-center space-x-2">
+    <input
+      type="radio"
+      name="jawaban_benar"
+      value={index.toString()}
+      checked={jawaban_benar === index.toString()}
+      onChange={() => setJawaban_Benar(index.toString())}
+      className="radio"
+    />
+    <input
+      type="text"
+      value={jawaban.konten_jawaban}
+      onChange={(e) => handleJawabanChange(index, e.target.value)}
+      className="input bg-white rounded-lg border border-gray-300 p-1 w-full text-black"
+      placeholder={`Masukkan Jawaban ${index + 1}`}
+    />
+  </div>  
+))}
             </div>
             <div className="form-control">
               <label className="label font-bold text-gray-800">
@@ -177,7 +175,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
               <textarea
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
-                className="input w-full input-bordered bg-slate-200 text-slate-800"
+                className="input bg-white rounded-lg border border-gray-300 p-1 w-full"
                 placeholder="Masukkan Pembahasan"
               />
             </div>
@@ -220,9 +218,9 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
               >
                 close
               </button>
-              <button className="btn btn-accent text-white" type="submit">
-                add
-              </button>
+              <button className="btn btn-accent text-white" type="submit" style={{ backgroundColor: '#5CB85C' }}>
+  add
+</button>
             </div>
           </form>
         </div>

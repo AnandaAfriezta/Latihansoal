@@ -10,6 +10,7 @@ export const metadata = {
 type Props = {
   id_bank_soal: number;
   nama_banksoal: string;
+  waktu: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -60,6 +61,7 @@ export default async function BankSoalList() {
                 id_bank_soal={prop.id_bank_soal}
                 nama_banksoal={prop.nama_banksoal}
                 jumlah_soal={prop.jumlah_soal}
+                waktu={prop.waktu}
               />
             ))}
           </div>

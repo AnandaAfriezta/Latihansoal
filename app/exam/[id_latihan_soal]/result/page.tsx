@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import CardDetailresult from "@/app/components/card/cardDetailresult";
 import Cookies from "js-cookie";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -42,6 +43,8 @@ interface ExamResultProps {
 interface Result {
   nama_latihansoal: string;
   nilai_akhir: number;
+  benar: number; 
+  salah: number; 
 }
 
 export default function ExamResult({ params }: ExamResultProps) {
@@ -81,7 +84,7 @@ export default function ExamResult({ params }: ExamResultProps) {
                 alt={""}
                 className="mr-1"
               />
-              <p>0 Benar</p>
+              <p>{result.benar} Benar</p>
             </div>
             <div className="text-black font-bold flex items-center">
               <Image
@@ -91,7 +94,7 @@ export default function ExamResult({ params }: ExamResultProps) {
                 alt={""}
                 className="mr-1"
               />
-              <p>0 Salah</p>
+              <p>{result.salah}Salah</p>
             </div>
           </div>
           <div className="flex items-center justify-center text-center">
@@ -107,6 +110,9 @@ export default function ExamResult({ params }: ExamResultProps) {
           <h2 className="text-lg text-black text-center">waktu pengerjaan</h2>
         </div>
       </div>
+      <div className="mt-8">
+      <CardDetailresult id={0} content={""} explain={""} jawaban={[]} />
+    </div>
     </div>
   );
 }
