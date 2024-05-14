@@ -130,11 +130,11 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               className="cursor-pointer"
             />
             {isPopupOpen && (
-              <div className="absolute top-8 right-0 bg-white shadow-md rounded-md">
+              <div className="absolute top-15 right-10 bg-white shadow-md rounded-md flex p-2">
                 {Array.from({ length: Math.ceil(data.length / itemsPerPage) }).map((_, index) => (
                   <button
                     key={index}
-                    className="block px-3 py-1 hover:bg-gray-200 focus:bg-gray-200"
+                    className="block px-3 py-2 hover:bg-gray-200 focus:bg-gray-200"
                     onClick={() => setStartIndex(index * itemsPerPage)}
                   >
                     {index + 1}
