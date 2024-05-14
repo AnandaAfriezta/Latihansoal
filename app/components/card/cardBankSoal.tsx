@@ -9,7 +9,6 @@ type Props = {
   id_bank_soal: number;
   nama_banksoal: string;
   jumlah_soal: number;
-  waktu: number;
 };
 
 export default function CardBankSoal(props: Props) {

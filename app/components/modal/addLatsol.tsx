@@ -6,7 +6,7 @@ interface AddLatsolProps {
   onSubmit: (formData: any) => void;
 }
 
-const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
+export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     nama_latihansoal: "",
     durasi: 0,

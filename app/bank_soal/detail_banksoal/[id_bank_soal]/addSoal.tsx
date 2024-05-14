@@ -64,7 +64,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     });
 
     const url = new URL(
-      `http://192.168.1.18:3000/soal/${id_bank_soal}/add-soal`
+      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`
     );
     const params = new URLSearchParams();
     url.search = params.toString();
