@@ -27,10 +27,10 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [pembahasan, setPembahasan] = useState("");
   const [jawaban_benar, setJawaban_Benar] = useState<string | null>(null);
   const [jawabanList, setJawabanList] = useState([
-    { konten_jawaban: "", jawaban_benar: "0" },
-    { konten_jawaban: "", jawaban_benar: "0" },
-    { konten_jawaban: "", jawaban_benar: "0" },
-    { konten_jawaban: "", jawaban_benar: "0" },
+    { konten_jawaban: "", jawaban_benar: "" },
+    { konten_jawaban: "", jawaban_benar: "" },
+    { konten_jawaban: "", jawaban_benar: "" },
+    { konten_jawaban: "", jawaban_benar: "" },
   ]);
   const [modal, setModal] = useState(false);
   const [useTextForm, setUseTextForm] = useState(true);
@@ -43,11 +43,19 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     setJawabanList(newJawabanList);
   };
 
-  const handleJawabanBenarChange = (index: number, value: string) => {
-    const newJawabanList = [...jawabanList];
-    newJawabanList[index].jawaban_benar = value;
-    setJawabanList(newJawabanList);
+  const indexToLetter = (index: number) => {
+    return String.fromCharCode(65 + index);
   };
+
+  const handleJawabanBenarChange = (index: number) => {
+    const newJawabanList = jawabanList.map((jawaban, i) => ({
+      ...jawaban,
+      jawaban_benar: i === index ? "1" : "0",
+    }));
+    setJawabanList(newJawabanList);
+    setJawaban_Benar(index.toString());
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setFileSoal(file);
@@ -64,7 +72,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     });
 
     const url = new URL(
-      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`
+      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`,
     );
     const params = new URLSearchParams();
     url.search = params.toString();
@@ -94,10 +102,10 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     setPembahasan("");
     setJawaban_Benar(null);
     setJawabanList([
-      { konten_jawaban: "", jawaban_benar: "0" },
-      { konten_jawaban: "", jawaban_benar: "0" },
-      { konten_jawaban: "", jawaban_benar: "0" },
-      { konten_jawaban: "", jawaban_benar: "0" },
+      { konten_jawaban: "", jawaban_benar: "" },
+      { konten_jawaban: "", jawaban_benar: "" },
+      { konten_jawaban: "", jawaban_benar: "" },
+      { konten_jawaban: "", jawaban_benar: "" },
     ]);
     router.refresh();
     setModal(false);
@@ -125,19 +133,18 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
       />
 
       <div className="modal">
-        <div className="modal-box bg-slate-100">
-          <h3 className="font-bold text-lg text-gray-800">Add Soal</h3>
+        <div className="modal-box bg-white">
+          <h3 className="font-bold text-lg text-gray-800">Tambah Soal</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-control">
-              <label className="label font-bold text-gray-800">Soal</label>
               {useTextForm ? (
-                <input
-                  type="text"
-                  value={konten_soal}
-                  onChange={(e) => setKontenSoal(e.target.value)}
-                  className="input bg-white rounded-lg border border-gray-300 p-1 w-full"
-                  placeholder="Masukkan Soal"
-                />
+                <textarea
+                value={konten_soal}
+                rows={5}
+                onChange={(e) => setKontenSoal(e.target.value)}
+                className="bg-white rounded-lg border border-gray-300 p-4 w-full "
+                placeholder="Tuliskan Soal. . ."
+              />
               ) : (
                 <input
                   type="file"
@@ -149,24 +156,24 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
             <div className="form-control">
               <label className="label font-bold text-gray-800">Jawaban</label>
               {jawabanList.map((jawaban, index) => (
-  <div key={index} className="flex items-center space-x-2">
-    <input
-      type="radio"
-      name="jawaban_benar"
-      value={index.toString()}
-      checked={jawaban_benar === index.toString()}
-      onChange={() => setJawaban_Benar(index.toString())}
-      className="radio"
-    />
-    <input
-      type="text"
-      value={jawaban.konten_jawaban}
-      onChange={(e) => handleJawabanChange(index, e.target.value)}
-      className="input bg-white rounded-lg border border-gray-300 p-1 w-full text-black"
-      placeholder={`Masukkan Jawaban ${index + 1}`}
-    />
-  </div>  
-))}
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="jawaban_benar"
+                    value={index.toString()}
+                    checked={jawaban_benar === index.toString()}
+                    onChange={() => handleJawabanBenarChange(index)}
+                    className="radio"
+                  />
+                  <input
+                    type="text"
+                    value={jawaban.konten_jawaban}
+                    onChange={(e) => handleJawabanChange(index, e.target.value)}
+                    className="input bg-white rounded-lg border border-gray-300 p-1 w-full text-black"
+                    placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
+                  />
+                </div>
+              ))}
             </div>
             <div className="form-control">
               <label className="label font-bold text-gray-800">
@@ -175,7 +182,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
               <textarea
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
-                className="input bg-white rounded-lg border border-gray-300 p-1 w-full"
+                className="bg-white rounded-lg border border-gray-300 p-1 w-full "
                 placeholder="Masukkan Pembahasan"
               />
             </div>
@@ -218,9 +225,13 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
               >
                 close
               </button>
-              <button className="btn btn-accent text-white" type="submit" style={{ backgroundColor: '#5CB85C' }}>
-  add
-</button>
+              <button
+                className="btn btn-accent text-white"
+                type="submit"
+                style={{ backgroundColor: "#5CB85C" }}
+              >
+                add
+              </button>
             </div>
           </form>
         </div>
