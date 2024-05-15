@@ -86,8 +86,7 @@ export default function ExamDetail({ params }: DetailUjianProps) {
                 key={index}
                 id_soal={item.id_soal}
                 konten_soal={item.konten_soal}
-                jawaban={item.jawaban}
-              />
+                jawaban={item.jawaban} id_latihan_soal={0}              />
             );
           })}
         </div>

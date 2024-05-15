@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import SearchLatsol from "./components/searchLatsol";
 import CardLatsol from "./components/card/cardLatsol";
@@ -23,9 +23,9 @@ type Data = {
 };
 
 type Props = {
-  id_latihan_soal: number;
   data: Data[];
 };
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function fetchLatihanSoal() {
@@ -37,12 +37,12 @@ async function fetchLatihanSoal() {
   return data;
 }
 
-const Home: React.FC<Props> = ({ data }) => {
+const Home: React.FC<Props> = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [latihanSoal, setLatihanSoal] = React.useState<Data[]>([]);
+  const [latihanSoal, setLatihanSoal] = useState<Data[]>([]);
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const userCookies = Cookies.get("user");
     if (userCookies) {
       setIsLoggedIn(true);
@@ -99,9 +99,7 @@ const Home: React.FC<Props> = ({ data }) => {
               Latihan Soal
             </h1>
             <div className="w-8 h-8 relative rounded-full mr-4">
-              {/* Periksa apakah user sudah login */}
               {isLoggedIn ? (
-                // Jika sudah login, tampilkan avatar
                 <Image
                   src="/avatar.png"
                   alt="Avatar"
@@ -126,17 +124,17 @@ const Home: React.FC<Props> = ({ data }) => {
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
             />
           </form>
-          {latihanSoal.map((item: Data, index: number) => (
+          {latihanSoal.map((item: Data) => (
             <CardLatsol
-              key={index}
+              key={item.id_latihan_soal}
               id_latihan_soal={item.id_latihan_soal}
               nama_latihansoal={item.nama_latihansoal}
               durasi={item.durasi}
-              tag={item.tags}
+              tags={item.tags}
             />
           ))}
           <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
-            <Link href="/bank_soal">list bank soal</Link>
+            <Link href="/Latsol">list bank soal</Link>
           </h1>
         </div>
       </div>

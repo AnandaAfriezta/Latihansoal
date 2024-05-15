@@ -4,15 +4,15 @@ import CardButton from "../button/cardButton";
 import Link from "next/link";
 
 type Tag = {
-  id_tags: number;
-  nama_tags: string;
+  id_tag: number;
+  nama_tag: string;
 };
 
 type Data = {
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
-  tag: Tag[];
+  tags: Tag[];
 };
 
 export default function CardLatsol(props: Data) {
@@ -46,8 +46,8 @@ export default function CardLatsol(props: Data) {
         </div>
       </div>
       <div className="flex flex-wrap gap-1">
-        {props.tag &&
-          props.tag.map((tag: any, index: number) => (
+        {props.tags &&
+          props.tags.map((tag: any, index: number) => (
             <div key={index}>
               <p className="bg-slate-100 p-2 mb-2 rounded-lg w-fit text-xs">
                 {tag.nama_tag}

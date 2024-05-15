@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-// import EditLatsol from "@/app/components/button/editlatsoll";
-// import DeleteLatsol from "@/app/components/button/deletelatsol";
+import EditLatsol from "@/app/components/button/editlatsol"; 
+import DeleteLatsol from "@/app/components/button/deletelatsol";
 import Link from "next/link";
 
 type Tag = {
@@ -41,6 +41,8 @@ export default function CardLatsol(props: Data) {
           </p>
         </div>
         <div className="ml-auto flex gap-2">
+          <EditLatsol {...props} />
+          <DeleteLatsol {...props} />
         </div>
       </div>
       <div className="flex flex-wrap gap-1">
