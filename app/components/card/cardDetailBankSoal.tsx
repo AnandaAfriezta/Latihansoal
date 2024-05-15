@@ -65,7 +65,7 @@ export default function CardDetailBankSoal(props: Props) {
             </div>
           ))}
         </div>
-        <div className="bg-[#FCFFD4] p-4 radius-md">
+        <div className="bg-[#FCFFD4] p-4 rounded-lg">
           <p className="font-medium text-black text-md mb-2">Pembahasan:</p>
           <p className="font-medium text-black text-md">{props.explain}</p>
         </div>

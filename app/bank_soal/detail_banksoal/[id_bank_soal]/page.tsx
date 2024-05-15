@@ -36,6 +36,7 @@ async function getDetailBankSoal(id_bank_soal: number) {
   const data = await res.json();
   return data;
 }
+
 interface DetailBankProps {
   params: {
     id_bank_soal: number;
