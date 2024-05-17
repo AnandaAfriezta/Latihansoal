@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import EditLatsol from "@/app/components/button/editlatsol"; 
+import EditLatsol from "@/app/components/button/editlatsol";
 import DeleteLatsol from "@/app/components/button/deletelatsol";
 import Link from "next/link";
 

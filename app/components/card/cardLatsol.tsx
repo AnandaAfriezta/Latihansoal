@@ -23,23 +23,21 @@ export default function CardLatsol(props: Data) {
       </h1>
       <div className="flex items-center mb-4">
         <div className="flex gap-4">
-            <div className="flex justify-between items-center">
-              <Image
-                src={"/time.png"}
-                width={16}
-                height={16}
-                alt={""}
-                className="mr-1"
-              />
-              <p className="text-[#A8A3A3] font-regular text-lg mr-3">
-                {props.durasi} Menit
-              </p>
-            </div>
-              <p className="text-[#A8A3A3] font-regular text-lg mr-3">
-                {props.durasi} Soal
-              </p>
-
-          
+          <div className="flex justify-between items-center">
+            <Image
+              src={"/time.png"}
+              width={16}
+              height={16}
+              alt={""}
+              className="mr-1"
+            />
+            <p className="text-[#A8A3A3] font-regular text-lg mr-3">
+              {props.durasi} Menit
+            </p>
+          </div>
+          <p className="text-[#A8A3A3] font-regular text-lg mr-3">
+            {props.durasi} Soal
+          </p>
         </div>
         <div className="ml-auto flex gap-2">
           <CardButton id_latihan_soal={props.id_latihan_soal} />

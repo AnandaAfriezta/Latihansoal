@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 type Props = {
-    id_latihan_soal: number;
-    nama_latihansoal: string;
+  id_latihan_soal: number;
+  nama_latihansoal: string;
 };
 
 export default function EditLatsol(props: Props) {
-  const [nama_latihansoal, setNama_latihansoal] = useState(props.nama_latihansoal);
+  const [nama_latihansoal, setNama_latihansoal] = useState(
+    props.nama_latihansoal,
+  );
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -32,7 +34,7 @@ export default function EditLatsol(props: Props) {
         body: JSON.stringify({
           nama_latihansoal: nama_latihansoal,
         }),
-      }
+      },
     );
     setIsMutating(false);
     router.refresh();

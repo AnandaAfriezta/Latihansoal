@@ -1,6 +1,6 @@
 "use client";
 
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import React from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,9 +12,10 @@ const DetailBankButton = ({ id_bank_soal }: { id_bank_soal: number }) => {
   };
 
   return (
-    <button onClick={handleClick} className="btn btn-outline hover:text-white">Detail soal
+    <button onClick={handleClick} className="btn btn-outline hover:text-white">
+      Detail soal
     </button>
-  )
+  );
 };
 
 export default DetailBankButton;

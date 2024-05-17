@@ -15,8 +15,8 @@ export default function SubmitUjian(props: Props) {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
   const router = useRouter();
-  
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   async function handleSubmit(id_latihan_soal: number) {
     setIsMutating(true);
@@ -33,16 +33,13 @@ export default function SubmitUjian(props: Props) {
         throw new Error("Token not found in user data.");
       }
 
-      const res = await fetch(
-        `${apiUrl}/ujian/${id_latihan_soal}/nilai`,
-        {
-          method: "POST",
-          cache: "no-store",
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/nilai`, {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
 
       if (!res.ok) {
         throw new Error("Failed to submit answer.");

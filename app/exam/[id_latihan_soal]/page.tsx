@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import DetailQuestions from '@/app/components/detailQuestions';
-import Link from 'next/link';
-import SubmitUjian from '@/app/components/modal/submitUjian';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import Image from 'next/image';
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
+import DetailQuestions from "@/app/components/detailQuestions";
+import Link from "next/link";
+import SubmitUjian from "@/app/components/modal/submitUjian";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface DetailUjianProps {
   params: {
@@ -15,7 +15,7 @@ interface DetailUjianProps {
   };
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const { id_latihan_soal } = params;
@@ -44,16 +44,19 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
       if (!token) {
         throw new Error("Token not found in user data.");
       }
-      const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
-        method: 'GET',
-        cache: 'no-store',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        }
-      });
+      const res = await fetch(
+        `${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`,
+        {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        },
+      );
       if (!res.ok) {
-        throw new Error('Failed to fetch data');
+        throw new Error("Failed to fetch data");
       }
       const result = await res.json();
 
@@ -63,7 +66,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
         setRemainingTime(result.data.durasi * 60);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -86,7 +89,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setRemainingTime((prevRemainingTime) =>
-        prevRemainingTime > 0 ? prevRemainingTime - 1 : 0
+        prevRemainingTime > 0 ? prevRemainingTime - 1 : 0,
       );
     }, 1000);
 
@@ -99,7 +102,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
@@ -107,7 +110,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
       <div className="w-full max-w-screen-md mx-auto px-4">
         <div
           className="flex w-full items-center justify-between mt-3 mb-6 pb-4"
-          style={{ boxShadow: '0 2px 0 0 #CACACA40' }}
+          style={{ boxShadow: "0 2px 0 0 #CACACA40" }}
         >
           <Link href="/">
             <ArrowBackIosNewIcon className="text-black cursor-pointer" />
@@ -131,7 +134,9 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
             />
             {isPopupOpen && (
               <div className="absolute top-15 right-10 bg-white shadow-md rounded-md flex p-2">
-                {Array.from({ length: Math.ceil(data.length / itemsPerPage) }).map((_, index) => (
+                {Array.from({
+                  length: Math.ceil(data.length / itemsPerPage),
+                }).map((_, index) => (
                   <button
                     key={index}
                     className="block px-3 py-2 hover:bg-gray-200 focus:bg-gray-200"
@@ -149,14 +154,17 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
         </div>
 
         <div className="flex flex-col gap-4 items-center w-full">
-          {data.slice(startIndex, startIndex + itemsPerPage).map((item: any, index: number) => (
-            <DetailQuestions
-              key={index}
-              id_soal={item.id_soal}
-              konten_soal={item.konten_soal}
-              jawaban={item.jawaban}
-              id_latihan_soal={params.id_latihan_soal}/>
-          ))}
+          {data
+            .slice(startIndex, startIndex + itemsPerPage)
+            .map((item: any, index: number) => (
+              <DetailQuestions
+                key={index}
+                id_soal={item.id_soal}
+                konten_soal={item.konten_soal}
+                jawaban={item.jawaban}
+                id_latihan_soal={params.id_latihan_soal}
+              />
+            ))}
         </div>
 
         <div className="flex flex-col mt-4 gap-4 absolute bottom-8 right-0 left-0 w-full">
@@ -166,8 +174,8 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               disabled={isAtStart}
               className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
               style={{
-                visibility: isAtStart ? 'hidden' : 'visible',
-                boxShadow: '0 3px 0 0 #B1A6A6',
+                visibility: isAtStart ? "hidden" : "visible",
+                boxShadow: "0 3px 0 0 #B1A6A6",
               }}
             >
               &lt;
@@ -180,8 +188,8 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               disabled={isAtEnd}
               className="bg-[#E3D9CA] px-4 rounded-xl text-[#515151] font-extrabold text-2xl"
               style={{
-                visibility: isAtEnd ? 'hidden' : 'visible',
-                boxShadow: '0 3px 0 0 #B1A6A6',
+                visibility: isAtEnd ? "hidden" : "visible",
+                boxShadow: "0 3px 0 0 #B1A6A6",
               }}
             >
               &gt;

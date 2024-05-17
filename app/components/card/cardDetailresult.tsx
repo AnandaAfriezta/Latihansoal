@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-
 type Jawaban = {
   id_jawaban: number;
   konten_jawaban: string;
@@ -10,7 +9,7 @@ type Jawaban = {
 type Props = {
   id: number;
   content: string;
-  
+
   explain: string;
   jawaban: Jawaban[];
 };

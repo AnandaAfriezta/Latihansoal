@@ -33,7 +33,7 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
     const selectedAnswersFromCookieString = Cookies.get("selectedAnswers");
     if (selectedAnswersFromCookieString) {
       const selectedAnswersFromCookie = JSON.parse(
-        selectedAnswersFromCookieString
+        selectedAnswersFromCookieString,
       );
       setSelectedAnswers(selectedAnswersFromCookie);
     }
@@ -48,7 +48,7 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
     // Simpan jawaban yang dipilih ke dalam cookies
     Cookies.set(
       "selectedAnswers",
-      JSON.stringify({ ...selectedAnswers, [id_soal]: index })
+      JSON.stringify({ ...selectedAnswers, [id_soal]: index }),
     );
   };
 

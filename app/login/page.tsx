@@ -46,22 +46,22 @@ const Login = () => {
   return (
     <div className="w-full h-screen bg-white py-8">
       <div className="w-full max-w-screen-md mx-auto px-4">
-      <div className="flex w-full items-center justify-between mt-3 mb-12">
-              <Link href={"/"}>
-                <ArrowBackIosNewIcon className="text-black" />
-              </Link>
-              <h1 className="font-bold text-black text-[20px] cursor-pointer hover:underline">
-                Login
-              </h1>
-              <div className="w-8 h-8 relative rounded-full">
-                <Image
-                  src="/avatar.png"
-                  alt="Avatar"
-                  layout="fill"
-                  className="rounded-full"
-                />
-              </div>
-            </div>
+        <div className="flex w-full items-center justify-between mt-3 mb-12">
+          <Link href={"/"}>
+            <ArrowBackIosNewIcon className="text-black" />
+          </Link>
+          <h1 className="font-bold text-black text-[20px] cursor-pointer hover:underline">
+            Login
+          </h1>
+          <div className="w-8 h-8 relative rounded-full">
+            <Image
+              src="/avatar.png"
+              alt="Avatar"
+              layout="fill"
+              className="rounded-full"
+            />
+          </div>
+        </div>
         <div className="w-full items-center justify-center mt-3 mb-12">
           {error && <div style={{ color: "red" }}>{error}</div>}
           <div>

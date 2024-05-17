@@ -2,7 +2,7 @@
 import React from "react";
 import Cookies from "js-cookie";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 interface AnswerObject {
   id_latihan_soal: number;
@@ -43,7 +43,7 @@ const DetailAnswer: React.FC<AnswerObject> = ({
           body: JSON.stringify({
             id_jawaban,
           }),
-        }
+        },
       );
       if (!res.ok) {
         throw new Error("Failed to submit answer.");

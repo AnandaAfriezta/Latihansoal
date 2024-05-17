@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 
@@ -28,7 +28,10 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
       <h2 className="text-lg font-bold mb-4">Tambah Latihan Soal</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="nama_latihansoal" className="block text-sm font-medium text-gray-600">
+          <label
+            htmlFor="nama_latihansoal"
+            className="block text-sm font-medium text-gray-600"
+          >
             Nama Latihan Soal
           </label>
           <input
@@ -42,7 +45,10 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="durasi" className="block text-sm font-medium text-gray-600">
+          <label
+            htmlFor="durasi"
+            className="block text-sm font-medium text-gray-600"
+          >
             Durasi (menit)
           </label>
           <input
@@ -56,7 +62,10 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="tags" className="block text-sm font-medium text-gray-600">
+          <label
+            htmlFor="tags"
+            className="block text-sm font-medium text-gray-600"
+          >
             Tags
           </label>
           <input

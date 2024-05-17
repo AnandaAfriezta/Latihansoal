@@ -28,7 +28,7 @@ const CardButton: React.FC<{ id_latihan_soal: number }> = ({
             "Content-Type": "application/json",
             Authorization: `${token}`,
           },
-        }
+        },
       );
       if (!res.ok) {
         throw new Error("Failed to submit answer.");

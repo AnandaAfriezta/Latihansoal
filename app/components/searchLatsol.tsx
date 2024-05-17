@@ -30,10 +30,13 @@ const SearchLatsol = () => {
           placeholder="search..."
         />
       </label>
-      <button type="submit" className="join-item btn btn-accent text-white relative"
-       style={{
-        backgroundColor: "#7D9FA8"
-      }}>
+      <button
+        type="submit"
+        className="join-item btn btn-accent text-white relative"
+        style={{
+          backgroundColor: "#7D9FA8",
+        }}
+      >
         <Image
           src="/search1.png"
           alt="Search"
