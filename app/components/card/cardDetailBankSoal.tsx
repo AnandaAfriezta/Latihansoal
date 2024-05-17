@@ -1,3 +1,4 @@
+import EditSoal from "@/app/bank_soal/detail_banksoal/[id_bank_soal]/editSoal";
 import Image from "next/image";
 
 type Jawaban = {
@@ -14,15 +15,17 @@ type Props = {
 };
 
 export default function CardDetailBankSoal(props: Props) {
+  const { id, content, explain, jawaban } = props;
+
   return (
     <div className="collapse collapse-arrow bg-white rounded-lg border border-gray-300 p-1 w-full mb-8">
       <input type="checkbox" name="my-accordion-1" />
       <div className="collapse-title text-xl font-semibold text-black text-overflow">
-        {props.content}
+        {content}
       </div>
       <div className="w-full collapse-content">
         <div className="flex flex-col mb-4 w-full">
-          {props.jawaban.map((jawaban) => (
+          {jawaban.map((jawaban) => (
             <div
               key={jawaban.id_jawaban}
               className={`flex items-center justify-between ${
@@ -66,7 +69,15 @@ export default function CardDetailBankSoal(props: Props) {
         </div>
         <div className="bg-[#FCFFD4] p-4 rounded-lg">
           <p className="font-medium text-black text-md mb-2">Pembahasan:</p>
-          <p className="font-medium text-black text-md">{props.explain}</p>
+          <p className="font-medium text-black text-md">{explain}</p>
+        </div>
+        <div className="flex gap-2">
+          <EditSoal
+            id_soal={id}
+            konten_soal={content}
+            pembahasan={explain}
+            jawaban={jawaban}
+          />
         </div>
       </div>
     </div>

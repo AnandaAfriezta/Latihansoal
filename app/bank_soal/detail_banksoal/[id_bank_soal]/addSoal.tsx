@@ -34,6 +34,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   ]);
   const [modal, setModal] = useState(false);
   const [useTextForm, setUseTextForm] = useState(true);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const router = useRouter();
 
@@ -56,8 +57,52 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     setJawaban_Benar(index.toString());
   };
 
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    const validCharacters = /^[a-zA-Z0-9\s.,;:?!\-\+\*\/\(\)\[\]\{\}\\=\|<>\^%$#@~`'"]*$/;
+
+    if (!konten_soal.trim()) {
+      newErrors.konten_soal = "Pertanyaan wajib diisi.";
+    } else if (!validCharacters.test(konten_soal)) {
+      newErrors.konten_soal = "Pertanyaan mengandung karakter tidak valid.";
+    }
+
+    if (!pembahasan.trim()) {
+      newErrors.pembahasan = "Pembahasan wajib diisi.";
+    } else if (!validCharacters.test(pembahasan)) {
+      newErrors.pembahasan = "Pembahasan mengandung karakter tidak valid.";
+    }
+
+    const jawabanErrors = jawabanList.map((jawaban, index) => {
+      if (!jawaban.konten_jawaban.trim()) {
+        return `Jawaban opsi ${indexToLetter(index)} wajib diisi.`;
+      } else if (!validCharacters.test(jawaban.konten_jawaban)) {
+        return `Jawaban opsi ${indexToLetter(index)} mengandung karakter tidak valid.`;
+      }
+      return "";
+    });
+
+    jawabanErrors.forEach((error, index) => {
+      if (error) {
+        newErrors[`jawaban_${index}`] = error;
+      }
+    });
+
+    if (jawaban_benar === null) {
+      newErrors.jawaban_benar = "Silahkan pilih jawaban yang benar.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     console.log("Mengirim formulir dengan data:", {
       konten_soal: konten_soal,
@@ -67,7 +112,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     });
 
     const url = new URL(
-      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`,
+      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`
     );
 
     const params = new URLSearchParams();
@@ -93,6 +138,12 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
 
     console.log("Formulir berhasil dikirim");
 
+    resetForm();
+    router.refresh();
+    setModal(false);
+  }
+
+  const resetForm = () => {
     setKontenSoal("");
     setFileSoal(null);
     setPembahasan("");
@@ -103,13 +154,15 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
       { konten_jawaban: "", jawaban_benar: "0" },
       { konten_jawaban: "", jawaban_benar: "0" },
     ]);
-    router.refresh();
-    setModal(false);
-  }
+    setErrors({});
+  };
 
   function handleChange() {
     console.log("Modal state changed");
     setModal(!modal);
+    if (modal) {
+      resetForm();
+    }
   }
 
   return (
@@ -137,9 +190,14 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                 value={konten_soal}
                 rows={5}
                 onChange={(e) => setKontenSoal(e.target.value)}
-                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                className={`bg-white rounded-lg border ${
+                  errors.konten_soal ? "border-red-500" : "border-gray-300"
+                } p-4 w-full my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
                 placeholder="Tuliskan Soal . . ."
               />
+              {errors.konten_soal && (
+                <p className="text-red-500 text-sm">{errors.konten_soal}</p>
+              )}
             </div>
             <div className="form-control my-3">
               {jawabanList.map((jawaban, index) => (
@@ -151,26 +209,30 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                       value={index.toString()}
                       checked={jawaban_benar === index.toString()}
                       onChange={() => handleJawabanBenarChange(index)}
-                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-gray-400 checked:border-transparent focus:outline-none"
-                      style={{
-                        backgroundColor:
-                          jawaban_benar === index.toString()
-                            ? "#808080"
-                            : "#fff",
-                      }}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-gray-400 checked:border-transparent focus:outline-none focus:ring-2 focus:ring-[#689ECF]"
                     />
                     <input
                       type="text"
                       value={jawaban.konten_jawaban}
-                      onChange={(e) =>
-                        handleJawabanChange(index, e.target.value)
-                      }
-                      className="pl-8 input bg-white rounded-lg border border-gray-300 p-1 w-full text-black my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0"
+                      onChange={(e) => handleJawabanChange(index, e.target.value)}
+                      className={`pl-8 input bg-white rounded-lg border ${
+                        errors[`jawaban_${index}`]
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } p-1 w-full text-black my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0`}
                       placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
                     />
+                    {errors[`jawaban_${index}`] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[`jawaban_${index}`]}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
+              {errors.jawaban_benar && (
+                <p className="text-red-500 text-sm">{errors.jawaban_benar}</p>
+              )}
             </div>
 
             <div className="form-control">
@@ -178,9 +240,14 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                 rows={5}
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
-                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 mb-5 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                className={`bg-white rounded-lg border ${
+                  errors.pembahasan ? "border-red-500" : "border-gray-300"
+                } p-4 w-full my-3 mb-5 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
                 placeholder="Tuliskan Jawaban dan Pembahasan Soal"
               />
+              {errors.pembahasan && (
+                <p className="text-red-500 text-sm">{errors.pembahasan}</p>
+              )}
             </div>
             <div className="modal-action">
               <button
