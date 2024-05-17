@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import SearchLatsol from "./components/searchLatsol";
 import CardLatsol from "./components/card/cardLatsol";
-import AddLatsol from "./components/modal/addLatsol";
+import AddLatsol from "./Latsol/addLatsol";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 import Cookies from "js-cookie";

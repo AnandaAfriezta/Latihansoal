@@ -4,7 +4,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 
 export const metadata = {
-  title: "Bank Soal",
+  title: "Latihan Soal",
 };
 
 type Props = {
@@ -26,8 +26,27 @@ async function getLatsol() {
 export default async function LatihansoalList() {
   const props: Props[] = await getLatsol();
 
+  function handleChange() {
+    console.log("Modal state changed");
+    setModal(!modal);
+  }
+
   return (
     <main>
+ <div>
+      <button
+        className="text-white w-full bg-[#5CB85C] py-3 rounded-lg text-md font-semibold mb-8 flex justify-center items-center"
+        style={{ boxShadow: "0 3px 0 0 #51656A" }}
+        onClick={handleChange}
+      >
+        <span className="text-md font-semibold mr-2">+</span> Tambah Soal
+      </button>
+      <input
+        type="checkbox"
+        checked={modal}
+        onChange={handleChange}
+        className="modal-toggle"
+      />
       <div className="w-full bg-white py-8">
         <div className="w-full max-w-screen-md mx-auto px-4">
             <div className="flex w-full items-center justify-between mt-3 mb-12">
@@ -62,8 +81,13 @@ export default async function LatihansoalList() {
               />
             ))}
           </div>
+          </div>
         </div>
       </div>
     </main>
   );
 }
+function setModal(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+

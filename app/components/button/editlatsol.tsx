@@ -68,7 +68,7 @@ export default function EditLatsol(props: Props) {
                 value={nama_latihansoal}
                 onChange={(e) => setNama_latihansoal(e.target.value)}
                 className="input w-full input-bordered bg-slate-200 text-slate-800 mb-8"
-                placeholder="Nama Bank Soal"
+                placeholder="Nama latihan soal"
               />
             </div>
             <div className="w-full flex gap-2 justify-end">
