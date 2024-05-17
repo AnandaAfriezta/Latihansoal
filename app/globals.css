@@ -2,54 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-
 div {
-    background-color: slate-100;
+  background-color: slate-100;
 }
 @media screen and (max-width: 540px) {
-    .text-overflow {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 18em; 
-    }
+  .text-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 18em;
   }
+}
 
-  .custom-radio {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    border: 0.6px solid #999CA1;
-    outline: none;
-    cursor: pointer;
-    background-color: white;
-    position: relative;
-  }
-  
-  /* Style for checked state */
-  .custom-radio:checked {
-    background-color: white;
-  }
-  
-  /* Style for inner circle */
-  .custom-radio::after {
-    content: '';
-    display: block;
-    width: 10px;
-    height: 10px;
-    background-color: #999CA1;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-  }
-  
-  /* Style for inner circle in checked state */
-  .custom-radio:checked::after {
-    opacity: 1;
-  }
+.custom-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 0.6px solid #999ca1;
+  outline: none;
+  cursor: pointer;
+  background-color: white;
+  position: relative;
+}
+
+/* Style for checked state */
+.custom-radio:checked {
+  background-color: white;
+}
+
+/* Style for inner circle */
+.custom-radio::after {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-color: #999ca1;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+/* Style for inner circle in checked state */
+.custom-radio:checked::after {
+  opacity: 1;
+}

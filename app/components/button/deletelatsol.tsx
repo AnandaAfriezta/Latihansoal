@@ -7,28 +7,25 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Image from "next/image";
 
 type Props = {
-    id_latihan_soal: number;
-    nama_latihansoal: string;
+  id_latihan_soal: number;
+  nama_latihansoal: string;
 };
 
 export default function DeleteLatsol(props: Props) {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const router = useRouter();
 
   async function handleDelete(id_latihan_soal: number) {
     setIsMutating(true);
 
-    await fetch(
-      `${apiUrl}/latihansoal/delete-latihansoal/${id_latihan_soal}`,
-      {
-        method: "DELETE",
-        cache: "no-store",
-      }
-    );
+    await fetch(`${apiUrl}/latihansoal/delete-latihansoal/${id_latihan_soal}`, {
+      method: "DELETE",
+      cache: "no-store",
+    });
 
     setIsMutating(false);
 
@@ -43,7 +40,7 @@ export default function DeleteLatsol(props: Props) {
   return (
     <div>
       <div onClick={handleChange}>
-        <Image src="/delete.png" alt="delete" width={16} height={16}/>
+        <Image src="/delete.png" alt="delete" width={16} height={16} />
       </div>
 
       <input

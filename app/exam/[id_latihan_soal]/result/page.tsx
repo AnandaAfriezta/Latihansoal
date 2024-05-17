@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -43,8 +43,8 @@ interface ExamResultProps {
 interface Result {
   nama_latihansoal: string;
   nilai_akhir: number;
-  benar: number; 
-  salah: number; 
+  benar: number;
+  salah: number;
 }
 
 export default function ExamResult({ params }: ExamResultProps) {
@@ -71,10 +71,10 @@ export default function ExamResult({ params }: ExamResultProps) {
           <h1 className="text-2xl font-semibold mb-3 text-black">
             {result.nama_latihansoal}
           </h1>
-          <h2 className="text-lg font-bold text-#A8A3A3 text-center">
-            Nilai:
+          <h2 className="text-lg font-bold text-#A8A3A3 text-center">Nilai:</h2>
+          <h2 className="text-2xl font-bold text-black text-center">
+            {result.nilai_akhir}%
           </h2>
-          <h2 className="text-2xl font-bold text-black text-center">{result.nilai_akhir}%</h2>
           <div className="flex justify-between items-center">
             <div className="text-black font-bold flex items-center">
               <Image
@@ -111,8 +111,8 @@ export default function ExamResult({ params }: ExamResultProps) {
         </div>
       </div>
       <div className="mt-8">
-      <CardDetailresult id={0} content={""} explain={""} jawaban={[]} />
-    </div>
+        <CardDetailresult id={0} content={""} explain={""} jawaban={[]} />
+      </div>
     </div>
   );
 }

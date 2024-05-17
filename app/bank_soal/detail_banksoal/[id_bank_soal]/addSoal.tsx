@@ -27,10 +27,10 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [pembahasan, setPembahasan] = useState("");
   const [jawaban_benar, setJawaban_Benar] = useState<string | null>(null);
   const [jawabanList, setJawabanList] = useState([
-    { konten_jawaban: "", jawaban_benar: "" },
-    { konten_jawaban: "", jawaban_benar: "" },
-    { konten_jawaban: "", jawaban_benar: "" },
-    { konten_jawaban: "", jawaban_benar: "" },
+    { konten_jawaban: "", jawaban_benar: "0" },
+    { konten_jawaban: "", jawaban_benar: "0" },
+    { konten_jawaban: "", jawaban_benar: "0" },
+    { konten_jawaban: "", jawaban_benar: "0" },
   ]);
   const [modal, setModal] = useState(false);
   const [useTextForm, setUseTextForm] = useState(true);
@@ -56,11 +56,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     setJawaban_Benar(index.toString());
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setFileSoal(file);
-  };
-
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
 
@@ -74,6 +69,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     const url = new URL(
       `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`,
     );
+
     const params = new URLSearchParams();
     url.search = params.toString();
 
@@ -102,10 +98,10 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     setPembahasan("");
     setJawaban_Benar(null);
     setJawabanList([
-      { konten_jawaban: "", jawaban_benar: "" },
-      { konten_jawaban: "", jawaban_benar: "" },
-      { konten_jawaban: "", jawaban_benar: "" },
-      { konten_jawaban: "", jawaban_benar: "" },
+      { konten_jawaban: "", jawaban_benar: "0" },
+      { konten_jawaban: "", jawaban_benar: "0" },
+      { konten_jawaban: "", jawaban_benar: "0" },
+      { konten_jawaban: "", jawaban_benar: "0" },
     ]);
     router.refresh();
     setModal(false);
@@ -120,7 +116,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     <div>
       <button
         className="text-white w-full bg-[#5CB85C] py-3 rounded-lg text-md font-semibold mb-8 flex justify-center items-center"
-        style={{ boxShadow: "0 3px 0 0 #51656A" }}
+        style={{ boxShadow: "0 3px 0 0 #237D3E" }}
         onClick={handleChange}
       >
         <span className="text-md font-semibold mr-2">+</span> Tambah Soal
@@ -134,103 +130,73 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
 
       <div className="modal">
         <div className="modal-box bg-white">
-          <h3 className="font-bold text-lg text-gray-800">Tambah Soal</h3>
+          <h3 className="font-bold text-lg text-gray-800 my-5">Tambah Soal</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-control">
-              {useTextForm ? (
-                <textarea
+              <textarea
                 value={konten_soal}
                 rows={5}
                 onChange={(e) => setKontenSoal(e.target.value)}
-                className="bg-white rounded-lg border border-gray-300 p-4 w-full "
-                placeholder="Tuliskan Soal. . ."
+                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                placeholder="Tuliskan Soal . . ."
               />
-              ) : (
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="file-input file-input-bordered w-full bg-slate-200 text-slate-400"
-                />
-              )}
             </div>
-            <div className="form-control">
-              <label className="label font-bold text-gray-800">Jawaban</label>
+            <div className="form-control my-3">
               {jawabanList.map((jawaban, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="jawaban_benar"
-                    value={index.toString()}
-                    checked={jawaban_benar === index.toString()}
-                    onChange={() => handleJawabanBenarChange(index)}
-                    className="radio"
-                  />
-                  <input
-                    type="text"
-                    value={jawaban.konten_jawaban}
-                    onChange={(e) => handleJawabanChange(index, e.target.value)}
-                    className="input bg-white rounded-lg border border-gray-300 p-1 w-full text-black"
-                    placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
-                  />
+                  <div className="relative w-full">
+                    <input
+                      type="radio"
+                      name="jawaban_benar"
+                      value={index.toString()}
+                      checked={jawaban_benar === index.toString()}
+                      onChange={() => handleJawabanBenarChange(index)}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-gray-400 checked:border-transparent focus:outline-none"
+                      style={{
+                        backgroundColor:
+                          jawaban_benar === index.toString()
+                            ? "#808080"
+                            : "#fff",
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={jawaban.konten_jawaban}
+                      onChange={(e) =>
+                        handleJawabanChange(index, e.target.value)
+                      }
+                      className="pl-8 input bg-white rounded-lg border border-gray-300 p-1 w-full text-black my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0"
+                      placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
+
             <div className="form-control">
-              <label className="label font-bold text-gray-800">
-                Pembahasan
-              </label>
               <textarea
+                rows={5}
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
-                className="bg-white rounded-lg border border-gray-300 p-1 w-full "
-                placeholder="Masukkan Pembahasan"
+                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 mb-5 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                placeholder="Tuliskan Jawaban dan Pembahasan Soal"
               />
-            </div>
-            <div className="form-control">
-              <label className="label font-bold text-gray-800">
-                Pilih Jenis Soal
-              </label>
-              <div className="flex items-center">
-                <label className="label font-medium text-gray-800">
-                  <input
-                    type="radio"
-                    name="jenis_soal"
-                    value="text"
-                    checked={useTextForm}
-                    onChange={() => setUseTextForm(true)}
-                    className="checkbox checkbox-accent mr-2"
-                  />
-                  Soal Teks
-                </label>
-              </div>
-              <div className="flex items-center">
-                <label className="label font-medium text-gray-800">
-                  <input
-                    type="radio"
-                    name="jenis_soal"
-                    value="file"
-                    checked={!useTextForm}
-                    onChange={() => setUseTextForm(false)}
-                    className="checkbox checkbox-accent mr-2"
-                  />
-                  Soal File
-                </label>
-              </div>
             </div>
             <div className="modal-action">
               <button
-                className="btn btn btn-outline text-accent hover:text-white hover:bg-accent"
+                className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black"
+                style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
                 type="button"
                 onClick={handleChange}
               >
-                close
+                Batal
               </button>
               <button
-                className="btn btn-accent text-white"
+                className="bg-[#5CB85C] px-3 py-1 rounded-md text-white"
+                style={{ boxShadow: "0 3px 0 0 #237D3E" }}
                 type="submit"
-                style={{ backgroundColor: "#5CB85C" }}
               >
-                add
+                Tambah
               </button>
             </div>
           </form>

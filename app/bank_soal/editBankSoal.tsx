@@ -32,7 +32,7 @@ export default function EditBankSoal(props: Props) {
         body: JSON.stringify({
           nama_banksoal: nama_banksoal,
         }),
-      }
+      },
     );
     setIsMutating(false);
     router.refresh();

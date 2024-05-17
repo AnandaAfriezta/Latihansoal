@@ -13,10 +13,7 @@ const EditBankButton: React.FC<{ id_bank_soal: number }> = ({
   };
 
   return (
-    <button 
-      onClick={handleClick} 
-      className="btn btn-accent text-white"
-    >
+    <button onClick={handleClick} className="btn btn-accent text-white">
       Edit
     </button>
   );

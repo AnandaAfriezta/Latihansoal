@@ -47,9 +47,11 @@ export default function CardDetailBankSoal(props: Props) {
                     className="mr-2"
                   />
                 )}
-                <p className="font-medium text-black">
-                  {jawaban.konten_jawaban}
-                </p>
+                {jawaban.konten_jawaban && (
+                  <p className="font-medium text-black">
+                    {jawaban.konten_jawaban}
+                  </p>
+                )}
               </div>
               {jawaban.jawaban_benar && (
                 <Image
@@ -58,9 +60,6 @@ export default function CardDetailBankSoal(props: Props) {
                   height={16}
                   alt="Checklist"
                 />
-              )}
-              {jawaban.konten_jawaban === "" && (
-                <p className="text-red-500 font-medium"></p>
               )}
             </div>
           ))}

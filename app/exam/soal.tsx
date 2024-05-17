@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import DetailQuestions from "@/app/components/detailQuestions";
@@ -15,7 +15,7 @@ async function getSoal(id_latihan_soal: number) {
     {
       method: "GET",
       cache: "no-store",
-    }
+    },
   );
   const data = await res.json();
   return data;
@@ -86,7 +86,9 @@ export default function ExamDetail({ params }: DetailUjianProps) {
                 key={index}
                 id_soal={item.id_soal}
                 konten_soal={item.konten_soal}
-                jawaban={item.jawaban} id_latihan_soal={0}              />
+                jawaban={item.jawaban}
+                id_latihan_soal={0}
+              />
             );
           })}
         </div>

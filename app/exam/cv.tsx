@@ -8,7 +8,7 @@ async function getSoal(id_latihan_soal: number) {
     {
       method: "GET",
       cache: "no-store",
-    }
+    },
   );
   const data = await res.json();
   return data;
