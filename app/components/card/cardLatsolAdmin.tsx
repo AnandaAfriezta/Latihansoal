@@ -7,6 +7,7 @@ import Link from "next/link";
 type Tag = {
   id_tags: number;
   nama_tags: string;
+  durasi: number;
 };
 
 type Data = {

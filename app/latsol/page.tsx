@@ -1,15 +1,15 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import CardLatsolAdmin from "../components/card/cardLatsolAdmin";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 
-export const metadata = {
-  title: "Latihan Soal",
-};
-
 type Props = {
   id_latihan_soal: number;
   nama_latihansoal: string;
+  durasi: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -23,8 +23,17 @@ async function getLatsol() {
   return data;
 }
 
-export default async function LatihansoalList() {
-  const props: Props[] = await getLatsol();
+export default function LatihansoalList() {
+  const [modal, setModal] = useState(false); // Define the modal state
+  const [props, setProps] = useState<Props[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getLatsol();
+      setProps(data);
+    }
+    fetchData();
+  }, []);
 
   function handleChange() {
     console.log("Modal state changed");
@@ -33,20 +42,6 @@ export default async function LatihansoalList() {
 
   return (
     <main>
- <div>
-      <button
-        className="text-white w-full bg-[#5CB85C] py-3 rounded-lg text-md font-semibold mb-8 flex justify-center items-center"
-        style={{ boxShadow: "0 3px 0 0 #51656A" }}
-        onClick={handleChange}
-      >
-        <span className="text-md font-semibold mr-2">+</span> Tambah Soal
-      </button>
-      <input
-        type="checkbox"
-        checked={modal}
-        onChange={handleChange}
-        className="modal-toggle"
-      />
       <div className="w-full bg-white py-8">
         <div className="w-full max-w-screen-md mx-auto px-4">
           <div className="flex w-full items-center justify-between mt-3 mb-12">
@@ -73,23 +68,18 @@ export default async function LatihansoalList() {
             />
           </form>
           <div>
-            {props.map((prop: any, index: number) => (
+            {props.map((prop: Props, index: number) => (
               <CardLatsolAdmin
                 key={index}
                 id_latihan_soal={prop.id_latihan_soal}
                 nama_latihansoal={prop.nama_latihansoal}
-                durasi={0}
+                durasi={prop.durasi}
                 tag={[]}
               />
             ))}
-          </div>
           </div>
         </div>
       </div>
     </main>
   );
 }
-function setModal(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}
-

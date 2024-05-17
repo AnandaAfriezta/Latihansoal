@@ -127,7 +127,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
         onChange={handleChange}
         className="modal-toggle"
       />
-
       <div className="modal">
         <div className="modal-box bg-white">
           <h3 className="font-bold text-lg text-gray-800 my-5">Tambah Soal</h3>
