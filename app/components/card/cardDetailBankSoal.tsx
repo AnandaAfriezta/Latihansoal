@@ -57,7 +57,7 @@ export default function CardDetailBankSoal(props: Props) {
                   </p>
                 )}
               </div>
-              {jawaban.jawaban_benar && (
+              {jawaban.jawaban_benar == 1 && (
                 <Image
                   src="/checklist.png"
                   width={16}
@@ -65,6 +65,7 @@ export default function CardDetailBankSoal(props: Props) {
                   alt="Checklist"
                 />
               )}
+              <></>
             </div>
           ))}
         </div>

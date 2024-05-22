@@ -42,8 +42,8 @@ export default function DeleteSoal({ id_soal}: Props) {
       />
       <div className="modal">
         <div className="modal-box bg-slate-100">
-          <h3 className="font-bold text-xl text-gray-800 mb-4">Confirm Delete</h3>
-          <p>Are you sure you want to delete? This action cannot be undone.</p>
+          <h3 className="font-bold text-xl text-gray-800 mb-4">Hapus</h3>
+          <p>Anda yakin ingin menghapus soal ini?</p>
           <div className="w-full flex gap-2 justify-end mt-4">
             <button
               type="button"
@@ -51,7 +51,7 @@ export default function DeleteSoal({ id_soal}: Props) {
               style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
               onClick={handleConfirmDelete}
             >
-              Cancel
+              Batal
             </button>
             {!isMutating ? (
               <button
@@ -60,11 +60,11 @@ export default function DeleteSoal({ id_soal}: Props) {
                 style={{ boxShadow: "0 3px 0 0 #B75D5D" }}
                 onClick={handleDelete}
               >
-                Delete
+                Hapus
               </button>
             ) : (
               <button type="button" className="btn loading">
-                Deleting...
+                Hapus...
               </button>
             )}
           </div>

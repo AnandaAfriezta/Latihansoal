@@ -26,12 +26,16 @@ export default function EditSoal(props: Data) {
 
   const router = useRouter();
 
+  const indexToLetter = (index: number) => {
+    return String.fromCharCode(65 + index);
+  };
+
   async function handleUpdate(e: SyntheticEvent) {
     e.preventDefault();
 
     setIsMutating(true);
 
-    const updatedJawaban = jawaban.map(item => ({
+    const updatedJawaban = jawaban.map((item) => ({
       id_jawaban: item.id_jawaban,
       konten_jawaban: item.konten_jawaban,
       jawaban_benar: item.jawaban_benar,
@@ -65,6 +69,23 @@ export default function EditSoal(props: Data) {
     setModal(!modal);
   }
 
+  function handleJawabanChange(index: number, key: string, value: any) {
+    setJawaban((prevJawaban) =>
+      prevJawaban.map((item, idx) =>
+        idx === index ? { ...item, [key]: value } : item
+      )
+    );
+  }
+
+  function handleRadioChange(index: number) {
+    setJawaban((prevJawaban) =>
+      prevJawaban.map((item, idx) => ({
+        ...item,
+        jawaban_benar: idx === index,
+      }))
+    );
+  }
+
   return (
     <div>
       <div onClick={handleChange}>
@@ -77,52 +98,49 @@ export default function EditSoal(props: Data) {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box bg-slate-100">
-          <h3 className="font-bold text-xl text-gray-800 mb-4">
-            Edit 
-          </h3>
+        <div className="modal-box bg-white">
+          <h3 className="font-bold text-lg text-gray-800 my-5">Edit Soal</h3>
           <form onSubmit={handleUpdate}>
             <div className="form-control">
-              <label className="label font-semibold text-[#9CA3AF]">
-                Konten Soal :{" "}
-              </label>
               <textarea
+                rows={5}
                 value={konten_soal}
                 onChange={(e) => setKontenSoal(e.target.value)}
-                className="textarea w-full input-bordered bg-slate-200 text-slate-800 mb-8"
-                placeholder="Konten Soal"
+                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                placeholder="Tuliskan Soal . . ."
               />
             </div>
+            <div className="form-control my-3">
             {jawaban.map((jawaban, index) => (
-              <div key={index} className="form-control">
-                <label className="label font-semibold text-[#9CA3AF]">
-                  Jawaban {index + 1} :{" "}
-                </label>
-                <textarea
-                  value={jawaban.konten_jawaban}
-                  onChange={(e) =>
-                    setJawaban((prevJawaban) =>
-                      prevJawaban.map((item, idx) =>
-                        idx === index
-                          ? { ...item, konten_jawaban: e.target.value }
-                          : item
-                      )
-                    )
-                  }
-                  className="textarea w-full input-bordered bg-slate-200 text-slate-800 mb-8"
-                  placeholder={`Jawaban ${index + 1}`}
-                />
+              <div key={index} className="flex items-center space-x-2">
+                <div className="relative w-full">
+                <input
+                    type="radio"
+                    name="jawaban_benar"
+                    checked={jawaban.jawaban_benar}
+                    onChange={() => handleRadioChange(index)}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-gray-400 checked:border-transparent focus:outline-none focus:ring-2 focus:ring-[#689ECF]"
+                    />
+                    <input
+                      type="text"
+                      value={jawaban.konten_jawaban}
+                      onChange={(e) =>
+                        handleJawabanChange(index, "konten_jawaban", e.target.value)
+                      }
+                      className="pl-8 input bg-white rounded-lg border border-gray-300 p-1 w-full text-black my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0"
+                      placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
+                    />
+                </div>
               </div>
             ))}
+            </div>
             <div className="form-control">
-              <label className="label font-semibold text-[#9CA3AF]">
-                Pembahasan :{" "}
-              </label>
               <textarea
+                rows={5}
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
-                className="textarea w-full input-bordered bg-slate-200 text-slate-800 mb-8"
-                placeholder="Pembahasan"
+                className="bg-white rounded-lg border border-gray-300 p-4 w-full my-3 mb-5 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none"
+                placeholder="Tuliskan Jawaban dan Pembahasan Soal"
               />
             </div>
             <div className="w-full flex gap-2 justify-end">
@@ -132,7 +150,7 @@ export default function EditSoal(props: Data) {
                 style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
                 onClick={handleChange}
               >
-                batal
+                Batal
               </button>
               {!isMutating ? (
                 <button
@@ -140,11 +158,11 @@ export default function EditSoal(props: Data) {
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
                   style={{ boxShadow: "0 3px 0 0 #237D3E" }}
                 >
-                  update
+                  Simpan
                 </button>
               ) : (
                 <button type="button" className="btn loading">
-                  updating...
+                  Simpan...
                 </button>
               )}
             </div>

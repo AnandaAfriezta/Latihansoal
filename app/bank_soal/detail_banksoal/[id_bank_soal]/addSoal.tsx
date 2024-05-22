@@ -34,6 +34,8 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [modal, setModal] = useState(false);
   const [useTextForm, setUseTextForm] = useState(true);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isMutating, setIsMutating] = useState(false);
+
 
   const router = useRouter();
 
@@ -245,22 +247,28 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                 <p className="text-red-500 text-sm">{errors.pembahasan}</p>
               )}
             </div>
-            <div className="modal-action">
+            <div className="modal-action w-full flex gap-2 justify-end">
               <button
-                className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black"
+                className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black font-semibold text-md"
                 style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
                 type="button"
                 onClick={handleChange}
               >
                 Batal
               </button>
-              <button
-                className="bg-[#5CB85C] px-3 py-1 rounded-md text-white"
-                style={{ boxShadow: "0 3px 0 0 #237D3E" }}
-                type="submit"
-              >
-                Tambah
-              </button>
+              {!isMutating ? (
+                <button
+                  type="submit"
+                  className="bg-[#5CB85C] px-3 py-1 rounded-md text-white font-semibold text-md"
+                  style={{ boxShadow: "0 3px 0 0 #237D3E" }}
+                >
+                  Tambah
+                </button>
+              ) : (
+                <button type="button" className="btn loading">
+                  Tambah...
+                </button>
+              )}
             </div>
           </form>
         </div>
