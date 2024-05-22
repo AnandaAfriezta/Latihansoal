@@ -22,7 +22,7 @@ export default function DeleteLatsol(props: Props) {
   async function handleDelete(id_latihan_soal: number) {
     setIsMutating(true);
 
-    await fetch(`${apiUrl}/latihansoal/delete-latihansoal/${id_latihan_soal}`, {
+    await fetch(`${apiUrl}/latihansoal/delete/${id_latihan_soal}`, {
       method: "DELETE",
       cache: "no-store",
     });

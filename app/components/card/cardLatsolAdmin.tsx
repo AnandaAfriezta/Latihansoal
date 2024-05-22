@@ -14,6 +14,7 @@ type Data = {
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
+  status: boolean;
   tag: Tag[];
 };
 

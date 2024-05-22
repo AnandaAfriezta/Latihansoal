@@ -7,12 +7,14 @@ import Image from "next/image";
 type Props = {
   id_latihan_soal: number;
   nama_latihansoal: string;
+  durasi: number;
+  status: boolean; // Assuming this comes as a boolean, we'll convert to 1 or 0
 };
 
 export default function EditLatsol(props: Props) {
-  const [nama_latihansoal, setNama_latihansoal] = useState(
-    props.nama_latihansoal,
-  );
+  const [nama_latihansoal, setNama_latihansoal] = useState(props.nama_latihansoal);
+  const [durasi, setDurasi] = useState(props.durasi);
+  const [status, setStatus] = useState(props.status ? 1 : 0);
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -24,7 +26,7 @@ export default function EditLatsol(props: Props) {
     setIsMutating(true);
 
     await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/latihansoal/edit-latihansoal/${props.id_latihan_soal}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/latihansoal/update/${props.id_latihan_soal}`,
       {
         method: "PATCH",
         cache: "no-store",
@@ -33,8 +35,10 @@ export default function EditLatsol(props: Props) {
         },
         body: JSON.stringify({
           nama_latihansoal: nama_latihansoal,
+          durasi: durasi,
+          status: status,
         }),
-      },
+      }
     );
     setIsMutating(false);
     router.refresh();
@@ -44,6 +48,7 @@ export default function EditLatsol(props: Props) {
   function handleChange() {
     setModal(!modal);
   }
+
   return (
     <div>
       <div onClick={handleChange}>
@@ -63,7 +68,7 @@ export default function EditLatsol(props: Props) {
           <form onSubmit={handleUpdate}>
             <div className="form-control">
               <label className="label font-semibold text-[#9CA3AF]">
-                Nama :{" "}
+                Nama :
               </label>
               <input
                 type="text"
@@ -72,6 +77,38 @@ export default function EditLatsol(props: Props) {
                 className="input w-full input-bordered bg-slate-200 text-slate-800 mb-8"
                 placeholder="Nama latihan soal"
               />
+              <input
+                type="number"
+                value={durasi}
+                onChange={(e) => setDurasi(Number(e.target.value))}
+                className="input w-full input-bordered bg-slate-200 text-slate-800 mb-8"
+                placeholder="Durasi latihan soal"
+              />
+              <label className="label font-semibold text-[#9CA3AF]">
+                Status :
+              </label>
+              <div className="flex gap-2 mb-8">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value={1}
+                    checked={status === 1}
+                    onChange={() => setStatus(1)}
+                    className="radio"
+                  />
+                  <span className="ml-2">Aktif</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value={0}
+                    checked={status === 0}
+                    onChange={() => setStatus(0)}
+                    className="radio"
+                  />
+                  <span className="ml-2">Tidak Aktif</span>
+                </label>
+              </div>
             </div>
             <div className="w-full flex gap-2 justify-end">
               <button
@@ -80,7 +117,7 @@ export default function EditLatsol(props: Props) {
                 style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
                 onClick={handleChange}
               >
-                batal
+                Batal
               </button>
               {!isMutating ? (
                 <button
@@ -88,11 +125,11 @@ export default function EditLatsol(props: Props) {
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
                   style={{ boxShadow: "0 3px 0 0 #237D3E" }}
                 >
-                  update
+                  Update
                 </button>
               ) : (
                 <button type="button" className="btn loading">
-                  updating...
+                  Updating...
                 </button>
               )}
             </div>

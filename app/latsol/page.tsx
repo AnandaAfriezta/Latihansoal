@@ -5,11 +5,13 @@ import Link from "next/link";
 import CardLatsolAdmin from "../components/card/cardLatsolAdmin";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
+import AddLatsol from "../Latsol/addLatsol";
 
 type Props = {
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
+  status: boolean;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -40,6 +42,24 @@ export default function LatihansoalList() {
     setModal(!modal);
   }
 
+  async function handleAddLatsol(formData: any) {
+    // Here, you would send the formData to your API to save the new latihan soal
+    const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+
+    if (res.ok) {
+      // Fetch the updated list of latihan soal
+      const updatedData = await getLatsol();
+      setProps(updatedData);
+      setModal(false);
+    }
+  }
+
   return (
     <main>
       <div className="w-full bg-white py-8">
@@ -67,6 +87,7 @@ export default function LatihansoalList() {
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
             />
           </form>
+          <AddLatsol onSubmit={handleAddLatsol}/>
           <div>
             {props.map((prop: Props, index: number) => (
               <CardLatsolAdmin
@@ -74,6 +95,7 @@ export default function LatihansoalList() {
                 id_latihan_soal={prop.id_latihan_soal}
                 nama_latihansoal={prop.nama_latihansoal}
                 durasi={prop.durasi}
+                status={prop.status}
                 tag={[]}
               />
             ))}
