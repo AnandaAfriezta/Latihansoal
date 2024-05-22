@@ -23,7 +23,6 @@ interface Props {
 
 const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [konten_soal, setKontenSoal] = useState("");
-  const [fileSoal, setFileSoal] = useState<File | null>(null);
   const [pembahasan, setPembahasan] = useState("");
   const [jawaban_benar, setJawaban_Benar] = useState<string | null>(null);
   const [jawabanList, setJawabanList] = useState([
@@ -35,6 +34,8 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [modal, setModal] = useState(false);
   const [useTextForm, setUseTextForm] = useState(true);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isMutating, setIsMutating] = useState(false);
+
 
   const router = useRouter();
 
@@ -107,12 +108,12 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     console.log("Mengirim formulir dengan data:", {
       konten_soal: konten_soal,
       jawaban: jawabanList,
-      fileSoal: fileSoal,
       pembahasan: pembahasan,
     });
 
     const url = new URL(
-      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`
+      `${process.env.NEXT_PUBLIC_API_URL}/soal/${id_bank_soal}/add-soal`,
+
     );
 
     const params = new URLSearchParams();
@@ -122,7 +123,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
       soal: {
         konten_soal: konten_soal,
         jawaban: jawabanList,
-        fileSoal: fileSoal,
         pembahasan: pembahasan,
       },
     };
@@ -145,7 +145,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
 
   const resetForm = () => {
     setKontenSoal("");
-    setFileSoal(null);
     setPembahasan("");
     setJawaban_Benar(null);
     setJawabanList([
@@ -248,22 +247,28 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                 <p className="text-red-500 text-sm">{errors.pembahasan}</p>
               )}
             </div>
-            <div className="modal-action">
+            <div className="modal-action w-full flex gap-2 justify-end">
               <button
-                className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black"
+                className="bg-[#E3D9CA] px-3 py-1 rounded-md text-black font-semibold text-md"
                 style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
                 type="button"
                 onClick={handleChange}
               >
                 Batal
               </button>
-              <button
-                className="bg-[#5CB85C] px-3 py-1 rounded-md text-white"
-                style={{ boxShadow: "0 3px 0 0 #237D3E" }}
-                type="submit"
-              >
-                Tambah
-              </button>
+              {!isMutating ? (
+                <button
+                  type="submit"
+                  className="bg-[#5CB85C] px-3 py-1 rounded-md text-white font-semibold text-md"
+                  style={{ boxShadow: "0 3px 0 0 #237D3E" }}
+                >
+                  Tambah
+                </button>
+              ) : (
+                <button type="button" className="btn loading">
+                  Tambah...
+                </button>
+              )}
             </div>
           </form>
         </div>

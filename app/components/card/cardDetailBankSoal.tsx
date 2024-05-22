@@ -1,3 +1,4 @@
+import DeleteSoal from "@/app/bank_soal/detail_banksoal/[id_bank_soal]/deleteSoal";
 import EditSoal from "@/app/bank_soal/detail_banksoal/[id_bank_soal]/editSoal";
 import Image from "next/image";
 
@@ -56,7 +57,7 @@ export default function CardDetailBankSoal(props: Props) {
                   </p>
                 )}
               </div>
-              {jawaban.jawaban_benar && (
+              {jawaban.jawaban_benar == 1 && (
                 <Image
                   src="/checklist.png"
                   width={16}
@@ -64,6 +65,7 @@ export default function CardDetailBankSoal(props: Props) {
                   alt="Checklist"
                 />
               )}
+              <></>
             </div>
           ))}
         </div>
@@ -77,6 +79,9 @@ export default function CardDetailBankSoal(props: Props) {
             konten_soal={content}
             pembahasan={explain}
             jawaban={jawaban}
+          />
+          <DeleteSoal
+            id_soal={id}
           />
         </div>
       </div>
