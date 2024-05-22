@@ -37,20 +37,23 @@ export default function EditSoal(props: Data) {
       jawaban_benar: item.jawaban_benar,
     }));
 
+    const requestBody = {
+      soal: {
+        konten_soal: konten_soal,
+        jawaban: updatedJawaban,
+        pembahasan: pembahasan,
+      },
+    };
+
     await fetch(
-      `https://latsol.ilhamirfan.my.id/soal/
-      edit-soal/${props.id_soal}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/soal/edit-soal/${props.id_soal}`,
       {
         method: "PATCH",
         cache: "no-store",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          konten_soal: konten_soal,
-          jawaban: updatedJawaban,
-          pembahasan: pembahasan,
-        }),
+        body: JSON.stringify(requestBody),
       }
     );
     setIsMutating(false);
@@ -76,7 +79,7 @@ export default function EditSoal(props: Data) {
       <div className="modal">
         <div className="modal-box bg-slate-100">
           <h3 className="font-bold text-xl text-gray-800 mb-4">
-            Edit {props.konten_soal}
+            Edit 
           </h3>
           <form onSubmit={handleUpdate}>
             <div className="form-control">

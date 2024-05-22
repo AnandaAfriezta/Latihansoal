@@ -23,7 +23,6 @@ interface Props {
 
 const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [konten_soal, setKontenSoal] = useState("");
-  const [fileSoal, setFileSoal] = useState<File | null>(null);
   const [pembahasan, setPembahasan] = useState("");
   const [jawaban_benar, setJawaban_Benar] = useState<string | null>(null);
   const [jawabanList, setJawabanList] = useState([
@@ -107,12 +106,12 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     console.log("Mengirim formulir dengan data:", {
       konten_soal: konten_soal,
       jawaban: jawabanList,
-      fileSoal: fileSoal,
       pembahasan: pembahasan,
     });
 
     const url = new URL(
-      `https://latsol.ilhamirfan.my.id/soal/${id_bank_soal}/add-soal`
+      `${process.env.NEXT_PUBLIC_API_URL}/soal/${id_bank_soal}/add-soal`,
+
     );
 
     const params = new URLSearchParams();
@@ -122,7 +121,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
       soal: {
         konten_soal: konten_soal,
         jawaban: jawabanList,
-        fileSoal: fileSoal,
         pembahasan: pembahasan,
       },
     };
@@ -145,7 +143,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
 
   const resetForm = () => {
     setKontenSoal("");
-    setFileSoal(null);
     setPembahasan("");
     setJawaban_Benar(null);
     setJawabanList([
