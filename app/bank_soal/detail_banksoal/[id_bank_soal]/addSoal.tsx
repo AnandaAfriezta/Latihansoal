@@ -183,14 +183,14 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
         <div className="modal-box bg-white">
           <h3 className="font-bold text-lg text-gray-800 my-5">Tambah Soal</h3>
           <form onSubmit={handleSubmit}>
-            <div className="form-control">
+            <div className="form-control my-3">
               <textarea
                 value={konten_soal}
                 rows={5}
                 onChange={(e) => setKontenSoal(e.target.value)}
                 className={`bg-white rounded-lg border ${
                   errors.konten_soal ? "border-red-500" : "border-gray-300"
-                } p-4 w-full my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
+                } p-4 w-full focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
                 placeholder="Tuliskan Soal . . ."
               />
               {errors.konten_soal && (
@@ -200,14 +200,14 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
             <div className="form-control my-3">
               {jawabanList.map((jawaban, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <div className="relative w-full">
+                  <div className="relative w-full my-3">
                     <input
                       type="radio"
                       name="jawaban_benar"
                       value={index.toString()}
                       checked={jawaban_benar === index.toString()}
                       onChange={() => handleJawabanBenarChange(index)}
-                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-gray-400 checked:border-transparent focus:outline-none focus:ring-2 focus:ring-[#689ECF]"
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 form-radio border-gray-300 rounded-md checked:bg-white-400 checked:border-transparent focus:outline-none focus:ring-2 focus:ring-[#689ECF]"
                     />
                     <input
                       type="text"
@@ -217,7 +217,7 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
                         errors[`jawaban_${index}`]
                           ? "border-red-500"
                           : "border-gray-300"
-                      } p-1 w-full text-black my-3 focus:border-[#689ECF] focus:border-2 focus:ring-0`}
+                      } p-1 w-full text-black focus:border-[#689ECF] focus:border-2 focus:ring-0`}
                       placeholder={`Masukkan Jawaban Opsi ${indexToLetter(index)}`}
                     />
                     {errors[`jawaban_${index}`] && (
@@ -233,14 +233,14 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
               )}
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-3">
               <textarea
                 rows={5}
                 value={pembahasan}
                 onChange={(e) => setPembahasan(e.target.value)}
                 className={`bg-white rounded-lg border ${
                   errors.pembahasan ? "border-red-500" : "border-gray-300"
-                } p-4 w-full my-3 mb-5 focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
+                } p-4 w-full focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none`}
                 placeholder="Tuliskan Jawaban dan Pembahasan Soal"
               />
               {errors.pembahasan && (
