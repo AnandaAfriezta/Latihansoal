@@ -8,14 +8,15 @@ type Tag = {
   nama_tag: string;
 };
 
-type Data = {
+type Props = {
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
+  jumlah_soal: number;
   tags: Tag[];
 };
 
-export default function CardLatsol(props: Data) {
+export default function CardLatsol(props: Props) {
   return (
     <div className="max-w-screen-md bg-white rounded-lg border border-gray-300 p-4 flex flex-col w-full mb-8">
       <h1 className="text-[20px] font-semibold text-black text-overflow mb-2 hover:underline">
@@ -36,7 +37,7 @@ export default function CardLatsol(props: Data) {
             </p>
           </div>
           <p className="text-[#A8A3A3] font-regular text-lg mr-3">
-            {props.durasi} Soal
+            {props.jumlah_soal} Soal
           </p>
         </div>
         <div className="ml-auto flex gap-2">

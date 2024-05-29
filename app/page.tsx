@@ -19,6 +19,7 @@ type Data = {
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
+  jumlah_soal: number;
   tags: Tag[];
 };
 
@@ -130,11 +131,12 @@ const Home: React.FC<Props> = () => {
               id_latihan_soal={item.id_latihan_soal}
               nama_latihansoal={item.nama_latihansoal}
               durasi={item.durasi}
+              jumlah_soal={item.jumlah_soal}
               tags={item.tags}
             />
           ))}
           <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
-            <Link href="/Latsol">list bank soal</Link>
+            <Link href="/Latsol">list latihan soal</Link>
           </h1>
         </div>
       </div>

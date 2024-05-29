@@ -10,6 +10,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     nama_latihansoal: "",
     durasi: 0,
+    nama_banksoal:"",
     nama_tag: "",
     status: "1",
   });
@@ -44,6 +45,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
     setFormData({
       nama_latihansoal: "",
       durasi: 0,
+      nama_banksoal:"",
       nama_tag: "",
       status: "true",
     });
@@ -56,7 +58,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
         style={{ boxShadow: "0 3px 0 0 #237D3E" }}
         onClick={handleButtonClick}
       >
-        <span className="text-md font-semibold mr-2">+</span> Tambah Soal
+        <span className="text-md font-semibold mr-2">+</span> Tambah Latihan Soal
       </button>
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
@@ -82,6 +84,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
                   onChange={handleChange}
                   value={formData.nama_latihansoal}
                   className="mt-1 p-2 border rounded-md w-full"
+                  style={{ backgroundColor: "#F2F2F2" }}
                   required
                 />
               </div>
@@ -99,6 +102,25 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
                   onChange={handleChange}
                   value={formData.durasi}
                   className="mt-1 p-2 border rounded-md w-full"
+                  style={{ backgroundColor: "#F2F2F2" }}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="nama_banksoal"
+                  className="block text-sm font-medium text-gray-600"
+                >
+                  Nama Bank Soal
+                </label>
+                <input
+                  type="text"
+                  id="nama_banksoal"
+                  name="nama_banksoal"
+                  onChange={handleChange}
+                  value={formData.nama_banksoal}
+                  className="mt-1 p-2 border rounded-md w-full"
+                  style={{ backgroundColor: "#F2F2F2" }}
                   required
                 />
               </div>
@@ -116,10 +138,11 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
                   onChange={handleChange}
                   value={formData.nama_tag}
                   className="mt-1 p-2 border rounded-md w-full"
+                  style={{ backgroundColor: "#F2F2F2" }}
                   required
                   />
                   </div>
-                  <button type="submit" className="bg-blue-500 text-white p-2 rounded-md">
+                  <button type="submit" className="bg-[#5CB85C] text-white p-2 rounded-md">
                   Tambah Latihan Soal
                   </button>
                   </form>
