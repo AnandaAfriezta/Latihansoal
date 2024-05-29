@@ -51,21 +51,24 @@ export default function CardDetailBankSoal(props: Props) {
                     className="mr-2"
                   />
                 )}
-                {jawaban.konten_jawaban && (
+                {jawaban.konten_jawaban ? (
                   <p className="font-medium text-black">
                     {jawaban.konten_jawaban}
                   </p>
+                ) : (
+                  <></>
                 )}
               </div>
-              {jawaban.jawaban_benar == 1 && (
+              {jawaban.jawaban_benar ? (
                 <Image
                   src="/checklist.png"
                   width={16}
                   height={16}
                   alt="Checklist"
                 />
+              ) : (
+                <></>
               )}
-              <></>
             </div>
           ))}
         </div>
