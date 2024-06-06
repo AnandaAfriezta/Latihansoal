@@ -1,15 +1,17 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import CardBankSoal from "../components/card/cardBankSoal";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
+import AddBanksoal from "./addbanksoal";
 
-export const metadata = {
-  title: "Bank Soal",
-};
 
 type Props = {
   id_bank_soal: number;
   nama_banksoal: string;
+  jumlah_soal: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -23,8 +25,20 @@ async function getBankSoal() {
   return data;
 }
 
-export default async function BankSoalList() {
-  const props: Props[] = await getBankSoal();
+export default function BankSoalList() {
+  const [bankSoalList, setBankSoalList] = useState<Props[]>([]);
+
+  useEffect(() => {
+    async function fetchBankSoal() {
+      const data = await getBankSoal();
+      setBankSoalList(data);
+    }
+    fetchBankSoal();
+  }, []);
+
+  const handleAddBanksoal = (newBanksoal: Props) => {
+    setBankSoalList((prevList) => [...prevList, newBanksoal]);
+  };
 
   return (
     <main>
@@ -54,7 +68,8 @@ export default async function BankSoalList() {
             />
           </form>
           <div>
-            {props.map((prop: any, index: number) => (
+            <AddBanksoal onSubmit={handleAddBanksoal} />
+            {bankSoalList.map((prop, index) => (
               <CardBankSoal
                 key={index}
                 id_bank_soal={prop.id_bank_soal}

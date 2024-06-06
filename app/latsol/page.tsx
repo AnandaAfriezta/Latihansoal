@@ -8,10 +8,12 @@ import Image from "next/image";
 import AddLatsol from "../Latsol/addLatsol";
 
 type Props = {
+  jumlah_soal: number;
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
   status: boolean;
+  id_bank_soal: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -32,7 +34,11 @@ export default function LatihansoalList() {
   useEffect(() => {
     async function fetchData() {
       const data = await getLatsol();
-      setProps(data);
+      if (Array.isArray(data)) {
+        setProps(data);
+      } else {
+        console.error("Expected an array but received:", data);
+      }
     }
     fetchData();
   }, []);
@@ -55,7 +61,11 @@ export default function LatihansoalList() {
     if (res.ok) {
       // Fetch the updated list of latihan soal
       const updatedData = await getLatsol();
-      setProps(updatedData);
+      if (Array.isArray(updatedData)) {
+        setProps(updatedData);
+      } else {
+        console.error("Expected an array but received:", updatedData);
+      }
       setModal(false);
     }
   }
@@ -93,7 +103,9 @@ export default function LatihansoalList() {
               <CardLatsolAdmin
                 key={index}
                 id_latihan_soal={prop.id_latihan_soal}
+                id_bank_soal={prop.id_bank_soal}
                 nama_latihansoal={prop.nama_latihansoal}
+                jumlah_soal={prop.jumlah_soal}
                 durasi={prop.durasi}
                 status={prop.status}
                 tag={[]}

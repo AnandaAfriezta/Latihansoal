@@ -15,7 +15,7 @@ export default function DeleteSoal({ id_soal}: Props) {
   async function handleDelete() {
     setIsMutating(true);
 
-    await fetch(`https://latsol.ilhamirfan.my.id/soal/delete-soal/${id_soal}`, {
+    await fetch(`http://192.168.1.8:3000/soal/delete-soal/${id_soal}`, {
       method: "DELETE",
       cache: "no-store",
     });

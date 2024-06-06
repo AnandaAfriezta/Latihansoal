@@ -6,15 +6,17 @@ import Image from "next/image";
 
 type Props = {
   id_latihan_soal: number;
+  id_bank_soal: number;
   nama_latihansoal: string;
   durasi: number;
-  status: boolean; // Assuming this comes as a boolean, we'll convert to 1 or 0
+  status: string; // Assuming status is a number (1 for "Aktif" and 0 for "Arsip")
 };
 
 export default function EditLatsol(props: Props) {
   const [nama_latihansoal, setNama_latihansoal] = useState(props.nama_latihansoal);
   const [durasi, setDurasi] = useState(props.durasi);
-  const [status, setStatus] = useState(props.status ? 1 : 0);
+  const [id_bank_soal, setid_bank_soal] = useState(props.id_bank_soal);
+  const [status, setStatus] = useState(props.status);
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -34,6 +36,7 @@ export default function EditLatsol(props: Props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          id_bank_soal: id_bank_soal,
           nama_latihansoal: nama_latihansoal,
           durasi: durasi,
           status: status,
@@ -90,23 +93,12 @@ export default function EditLatsol(props: Props) {
               <div className="flex gap-2 mb-8">
                 <label className="flex items-center">
                   <input
-                    type="radio"
-                    value={1}
-                    checked={status === 1}
-                    onChange={() => setStatus(1)}
-                    className="radio"
+                    type="checkbox"
+                    checked={status === 'Aktif'}
+                    onChange={(e) => setStatus(e.target.checked ? "Aktif" : "Arsip")}
+                    className="toggle toggle-primary"
                   />
-                  <span className="ml-2">Aktif</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value={0}
-                    checked={status === 0}
-                    onChange={() => setStatus(0)}
-                    className="radio"
-                  />
-                  <span className="ml-2">Tidak Aktif</span>
+                  <span className="ml-2">{status === "Aktif" ? "Aktif" : "Arsip"}</span>
                 </label>
               </div>
             </div>

@@ -10,7 +10,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     nama_latihansoal: "",
     durasi: 0,
-    nama_banksoal:"",
+    nama_banksoal: "",
     nama_tag: "",
     status: "1",
   });
@@ -45,10 +45,17 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
     setFormData({
       nama_latihansoal: "",
       durasi: 0,
-      nama_banksoal:"",
+      nama_banksoal: "",
       nama_tag: "",
-      status: "true",
+      status: "1",
     });
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      status: e.target.checked ? "1" : "0",
+    }));
   };
 
   return (
@@ -140,17 +147,33 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
                   className="mt-1 p-2 border rounded-md w-full"
                   style={{ backgroundColor: "#F2F2F2" }}
                   required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-600">
+                  Status
+                </label>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.status === "1"}
+                    onChange={handleStatusChange}
+                    className="toggle toggle-primary"
                   />
-                  </div>
-                  <button type="submit" className="bg-[#5CB85C] text-white p-2 rounded-md">
-                  Tambah Latihan Soal
-                  </button>
-                  </form>
-                  </div>
-                  </div>
-                  )}
-                  </div>
-                  );
-                  };
-                  
-                  export default AddLatsol;
+                  <span className="ml-2">
+                    {formData.status === "1" ? "Aktif" : "Arsip"}
+                  </span>
+                </div>
+              </div>
+              <button type="submit" className="bg-[#5CB85C] text-white p-2 rounded-md">
+                Tambah Latihan Soal
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AddLatsol;

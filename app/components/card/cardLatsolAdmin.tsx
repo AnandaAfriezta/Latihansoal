@@ -12,9 +12,11 @@ type Tag = {
 
 type Data = {
   id_latihan_soal: number;
+  id_bank_soal: number;
   nama_latihansoal: string;
   durasi: number;
   status: boolean;
+  jumlah_soal: number;
   tag: Tag[];
 };
 
@@ -39,8 +41,11 @@ export default function CardLatsol(props: Data) {
             </p>
           </div>
           <p className="text-[#A8A3A3] font-regular text-lg mr-3">
-            {props.durasi} Soal
+            {props.jumlah_soal} Soal
           </p>
+          {/* <p className="text-[#A8A3A3] font-regular text-lg mr-3">
+            {props.tag} Tag
+          </p> */}
         </div>
         <div className="ml-auto flex gap-2">
           <EditLatsol {...props} />
