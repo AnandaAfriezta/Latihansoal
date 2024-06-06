@@ -9,7 +9,6 @@ type Jawaban = {
 type Props = {
   id: number;
   content: string;
-
   explain: string;
   jawaban: Jawaban[];
 };

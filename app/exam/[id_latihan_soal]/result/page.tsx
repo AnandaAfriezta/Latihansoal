@@ -40,6 +40,7 @@ interface ExamResultProps {
     id_latihan_soal: number;
   };
 }
+
 interface Result {
   nama_latihansoal: string;
   nilai_akhir: number;
