@@ -21,7 +21,7 @@ const CardButton: React.FC<{ id_latihan_soal: number }> = ({
       }
 
       const res = await fetch(
-        `http://192.168.1.8:5000/ujian/${id_latihan_soal}/enrollment`,
+        `http://192.168.1.12:5000/ujian/${id_latihan_soal}/enrollment`,
         {
           method: "POST",
           headers: {

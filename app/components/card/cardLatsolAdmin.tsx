@@ -15,7 +15,7 @@ type Data = {
   id_bank_soal: number;
   nama_latihansoal: string;
   durasi: number;
-  status: boolean;
+  status: string;
   jumlah_soal: number;
   tag: Tag[];
 };
@@ -43,24 +43,19 @@ export default function CardLatsol(props: Data) {
           <p className="text-[#A8A3A3] font-regular text-lg mr-3">
             {props.jumlah_soal} Soal
           </p>
-          {/* <p className="text-[#A8A3A3] font-regular text-lg mr-3">
-            {props.tag} Tag
-          </p> */}
+          {props.tag.map((tag: Tag, index: number) => (
+            <p
+              key={index}
+              className="text-[#A8A3A3] font-regular text-lg mr-3"
+            >
+              {tag.nama_tags}
+            </p>
+          ))}
         </div>
         <div className="ml-auto flex gap-2">
           <EditLatsol {...props} />
           <DeleteLatsol {...props} />
         </div>
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {props.tag &&
-          props.tag.map((tag: Tag, index: number) => (
-            <div key={index}>
-              <p className="bg-slate-100 p-2 mb-2 rounded-lg w-fit text-xs">
-                {tag.nama_tags}
-              </p>
-            </div>
-          ))}
       </div>
     </div>
   );

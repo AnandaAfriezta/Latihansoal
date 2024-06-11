@@ -43,9 +43,32 @@ interface ExamResultProps {
 
 interface Result {
   nama_latihansoal: string;
+  durasi: number;
+  soalData: soalData[];
   nilai_akhir: number;
-  benar: number;
-  salah: number;
+  jumlahBenar: number;
+  jumlahSalah: number;
+}
+
+interface soalData {
+  id_soal: number;
+  konten_soal: string;
+  pembahasan: string;
+  jawaban: jawaban[];
+  jawaban_user: jawaban_user[];
+}
+
+interface jawaban {
+  id_jawaban: number;
+  konten_jawaban: string;
+  jawaban_benar: string;
+}
+
+interface jawaban_user {
+  id_jawaban_user: number;
+  id_jawaban: number;
+  konten_jawaban: string;
+  jawaban_benar: string;
 }
 
 export default function ExamResult({ params }: ExamResultProps) {
@@ -65,7 +88,7 @@ export default function ExamResult({ params }: ExamResultProps) {
   }
 
   return (
-    <div className="w-screen h-screen bg-slate-100">
+    <div className="bg-slate-100">
       <div></div>
       <div className="flex justify-center bg-slate-100">
         <div className="bg-white p-8 rounded-xl shadow-md">
@@ -85,7 +108,7 @@ export default function ExamResult({ params }: ExamResultProps) {
                 alt={""}
                 className="mr-1"
               />
-              <p>{result.benar} Benar</p>
+              <p>{result.jumlahBenar} Benar</p>
             </div>
             <div className="text-black font-bold flex items-center">
               <Image
@@ -95,7 +118,7 @@ export default function ExamResult({ params }: ExamResultProps) {
                 alt={""}
                 className="mr-1"
               />
-              <p>{result.salah}Salah</p>
+              <p>{result.jumlahSalah} Salah</p>
             </div>
           </div>
           <div className="flex items-center justify-center text-center">
@@ -106,13 +129,13 @@ export default function ExamResult({ params }: ExamResultProps) {
               alt={""}
               className="mr-1"
             />
-            <p className="text-lg font-semibold text-black">waktu</p>
+            <p className="text-lg font-semibold text-black">{result.durasi}</p>
           </div>
           <h2 className="text-lg text-black text-center">waktu pengerjaan</h2>
         </div>
       </div>
-      <div className="mt-8">
-        <CardDetailresult id={0} content={""} explain={""} jawaban={[]} />
+      <div className="container mx-auto mt-8 px-4">
+        <CardDetailresult soalData={result.soalData} />
       </div>
     </div>
   );
