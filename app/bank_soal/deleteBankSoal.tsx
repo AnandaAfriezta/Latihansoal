@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Snackbar } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 type Props = {
   id_bank_soal: number;
@@ -22,15 +23,36 @@ export default function DeleteBankSoal(props: Props) {
   async function handleDelete(id_bank_soal: number) {
     setIsMutating(true);
 
-    await fetch(`${apiUrl}/banksoal/delete-banksoal/${id_bank_soal}`, {
-      method: "DELETE",
-      cache: "no-store",
-    });
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
 
-    setIsMutating(false);
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
 
-    router.refresh();
-    setModal(false);
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      await fetch(`${apiUrl}/banksoal/delete-banksoal/${id_bank_soal}`, {
+        method: "DELETE",
+        cache: "no-store",
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      setIsMutating(false);
+
+      router.refresh();
+      setModal(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show error message to user
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {

@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CardDetailresult from "@/app/components/card/cardDetailresult";
 import Cookies from "js-cookie";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getResult(id_latihan_soal: number) {
   try {
-    const userCookie = Cookies.get("user");
+    const userCookie = Cookies.get("token");
     if (!userCookie) {
       throw new Error("User data not found. Please login again.");
     }
@@ -55,20 +57,19 @@ interface soalData {
   konten_soal: string;
   pembahasan: string;
   jawaban: jawaban[];
-  jawaban_user: jawaban_user[];
 }
 
 interface jawaban {
   id_jawaban: number;
   konten_jawaban: string;
   jawaban_benar: string;
+  jawaban_user: boolean;
 }
 
-interface jawaban_user {
-  id_jawaban_user: number;
-  id_jawaban: number;
-  konten_jawaban: string;
-  jawaban_benar: string;
+function formatDuration(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes} menit ${remainingSeconds} detik`;
 }
 
 export default function ExamResult({ params }: ExamResultProps) {
@@ -91,14 +92,23 @@ export default function ExamResult({ params }: ExamResultProps) {
     <div className="bg-slate-100">
       <div></div>
       <div className="flex justify-center bg-slate-100">
-        <div className="bg-white p-8 rounded-xl shadow-md">
-          <h1 className="text-2xl font-semibold mb-3 text-black">
+        <div className="bg-white p-8 rounded-xl shadow-md" style={{ height: "350px", width: "450px" }}>
+          <h1 className="text-2xl font-semibold mb-3 text-black text-center">
             {result.nama_latihansoal}
           </h1>
-          <h2 className="text-lg font-bold text-#A8A3A3 text-center">Nilai:</h2>
-          <h2 className="text-2xl font-bold text-black text-center">
-            {result.nilai_akhir}%
-          </h2>
+          <div className="flex justify-center my-4">
+            <div style={{ width: 100, height: 100 }}>
+              <CircularProgressbar
+                value={result.nilai_akhir}
+                text={`${result.nilai_akhir}%`}
+                styles={buildStyles({
+                  textColor: "black",
+                  pathColor: "#4caf50",
+                  trailColor: "#d6d6d6",
+                })}
+              />
+            </div>
+          </div>
           <div className="flex justify-between items-center">
             <div className="text-black font-bold flex items-center">
               <Image
@@ -121,7 +131,7 @@ export default function ExamResult({ params }: ExamResultProps) {
               <p>{result.jumlahSalah} Salah</p>
             </div>
           </div>
-          <div className="flex items-center justify-center text-center">
+          <div className="flex items-center justify-center text-center mt-4">
             <Image
               src={"/time.png"}
               width={16}
@@ -129,9 +139,11 @@ export default function ExamResult({ params }: ExamResultProps) {
               alt={""}
               className="mr-1"
             />
-            <p className="text-lg font-semibold text-black">{result.durasi}</p>
+            <p className="text-lg font-semibold text-black">
+              {result.durasi}
+            </p>
           </div>
-          <h2 className="text-lg text-black text-center">waktu pengerjaan</h2>
+          <h2 className="text-lg text-black text-center mt-2">waktu pengerjaan</h2>
         </div>
       </div>
       <div className="container mx-auto mt-8 px-4">

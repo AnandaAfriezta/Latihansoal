@@ -4,7 +4,7 @@ import DetailQuestions from "@/app/components/detailQuestions";
 
 async function getSoal(id_latihan_soal: number) {
   const res = await fetch(
-    `http://10.28.1.92:3000/ujian/${id_latihan_soal}/get-all-soal`,
+    `http://192.168.1.12:5000/ujian/${id_latihan_soal}/get-all-soal`,
     {
       method: "GET",
       cache: "no-store",
@@ -35,8 +35,7 @@ export default async function ExamDetail({ params }: detailUjianProps) {
                 key={index}
                 id_soal={item.id_soal}
                 konten_soal={item.konten_soal}
-                jawaban={item.jawaban}
-              />
+                jawaban={item.jawaban} id_latihan_soal={0}              />
             );
           })}
         </div>

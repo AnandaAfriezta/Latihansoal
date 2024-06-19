@@ -1,10 +1,11 @@
-"use client";
-
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 interface AddLatsolProps {
   onSubmit: (formData: any) => void;
 }
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,10 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
     status: "1",
   });
 
+
   const [modal, setModal] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formSubmitted, setFormSubmitted] = useState(false); // New state for tracking form submission
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,11 +29,38 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
-    setModal(false);
-    resetForm();
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
+
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (res.ok) {
+        const newLatsol = await res.json();
+        onSubmit(newLatsol);
+        setModal(false);
+        resetForm();
+      }
+    } catch (error) {
+      console.error("Failed to add latihan soal:", error);
+    }
   };
 
   const handleButtonClick = () => {
@@ -49,6 +80,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
       nama_tag: "",
       status: "1",
     });
+    setFormSubmitted(false); // Reset form submission state
   };
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {

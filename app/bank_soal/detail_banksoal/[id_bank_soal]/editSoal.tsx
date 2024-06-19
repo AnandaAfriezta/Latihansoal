@@ -3,11 +3,12 @@
 import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface Jawaban {
   id_jawaban: number;
   konten_jawaban: string;
-  jawaban_benar: boolean; // Changed to boolean
+  jawaban_benar: boolean;
 }
 
 interface Data {
@@ -31,6 +32,8 @@ export default function EditSoal(props: Data) {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const router = useRouter();
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const indexToLetter = (index: number) => {
     return String.fromCharCode(65 + index);
@@ -86,34 +89,51 @@ export default function EditSoal(props: Data) {
 
     setIsMutating(true);
 
-    const updatedJawaban = jawaban.map((item) => ({
-      id_jawaban: item.id_jawaban,
-      konten_jawaban: item.konten_jawaban,
-      jawaban_benar: item.jawaban_benar,
-    }));
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
 
-    const requestBody = {
-      soal: {
-        konten_soal: konten_soal,
-        jawaban: updatedJawaban,
-        pembahasan: pembahasan,
-      },
-    };
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
 
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/soal/edit-soal/${props.id_soal}`,
-      {
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      const updatedJawaban = jawaban.map((item) => ({
+        id_jawaban: item.id_jawaban,
+        konten_jawaban: item.konten_jawaban,
+        jawaban_benar: item.jawaban_benar,
+      }));
+
+      const requestBody = {
+        soal: {
+          konten_soal: konten_soal,
+          jawaban: updatedJawaban,
+          pembahasan: pembahasan,
+        },
+      };
+
+      await fetch(`${apiUrl}/soal/edit-soal/${props.id_soal}`, {
         method: "PATCH",
         cache: "no-store",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
         body: JSON.stringify(requestBody),
-      }
-    );
-    setIsMutating(false);
-    router.refresh();
-    setModal(false);
+      });
+
+      setIsMutating(false);
+      router.refresh();
+      setModal(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show error message to user
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {
@@ -160,7 +180,7 @@ export default function EditSoal(props: Data) {
           <form onSubmit={handleUpdate}>
             <div className="form-control my-3">
               <textarea
-                rows={5 }
+                rows={5}
                 value={konten_soal}
                 onChange={(e) => setKontenSoal(e.target.value)}
                 className={`bg-white rounded-lg border p-4 w-full focus:border-[#689ECF] focus:border-2 focus:ring-0 focus:outline-none ${
@@ -210,10 +230,10 @@ export default function EditSoal(props: Data) {
                   errors.pembahasan ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Tuliskan Jawaban dan Pembahasan Soal"
-                />
-                {errors.pembahasan && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pembahasan}</p>
-                )}
+              />
+              {errors.pembahasan && (
+                <p className="text-red-500 text-sm mt-1">{errors.pembahasan}</p>
+              )}
             </div>
             {errors.jawaban_benar && (
               <p className="text-red-500 text-sm mb-3">{errors.jawaban_benar}</p>

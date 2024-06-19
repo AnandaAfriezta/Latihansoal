@@ -3,6 +3,7 @@
 import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 type Props = {
   id_bank_soal: number;
@@ -13,7 +14,7 @@ export default function EditBankSoal(props: Props) {
   const [nama_banksoal, setNama_Banksoal] = useState(props.nama_banksoal);
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const router = useRouter();
 
   async function handleUpdate(e: SyntheticEvent) {
@@ -21,8 +22,20 @@ export default function EditBankSoal(props: Props) {
 
     setIsMutating(true);
 
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
+
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
+
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
     await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/banksoal/edit-banksoal/${props.id_bank_soal}`,
+      `${apiUrl}/banksoal/edit-banksoal/${props.id_bank_soal}`,
       {
         method: "PATCH",
         cache: "no-store",
@@ -34,9 +47,14 @@ export default function EditBankSoal(props: Props) {
         }),
       },
     );
-    setIsMutating(false);
-    router.refresh();
-    setModal(false);
+  setIsMutating(false);
+  router.refresh();
+  setModal(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show error message to user
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {

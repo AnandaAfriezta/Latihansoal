@@ -2,27 +2,50 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface Props {
   id_soal: number;
 }
 
-export default function DeleteSoal({ id_soal}: Props) {
+export default function DeleteSoal({ id_soal }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
   const router = useRouter();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   async function handleDelete() {
     setIsMutating(true);
 
-    await fetch(`http://192.168.1.8:3000/soal/delete-soal/${id_soal}`, {
-      method: "DELETE",
-      cache: "no-store",
-    });
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
 
-    setIsMutating(false);
-    router.refresh();
-    setConfirmDelete(false);
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
+
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      await fetch(`${apiUrl}/soal/delete-soal/${id_soal}`, {
+        method: "DELETE",
+        cache: "no-store",
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      setIsMutating(false);
+      router.refresh();
+      setConfirmDelete(false);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show error message to user
+      setIsMutating(false);
+    }
   }
 
   function handleConfirmDelete() {

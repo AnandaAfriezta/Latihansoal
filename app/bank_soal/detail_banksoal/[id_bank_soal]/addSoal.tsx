@@ -2,6 +2,7 @@
 
 import React, { useState, SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Jawaban {
   id_jawaban: number;
@@ -35,7 +36,6 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
   const [useTextForm, setUseTextForm] = useState(true);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isMutating, setIsMutating] = useState(false);
-
 
   const router = useRouter();
 
@@ -105,42 +105,59 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
       return;
     }
 
-    console.log("Mengirim formulir dengan data:", {
-      konten_soal: konten_soal,
-      jawaban: jawabanList,
-      pembahasan: pembahasan,
-    });
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
 
-    const url = new URL(
-      `${process.env.NEXT_PUBLIC_API_URL}/soal/${id_bank_soal}/add-soal`,
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
 
-    );
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
 
-    const params = new URLSearchParams();
-    url.search = params.toString();
-
-    const requestBody = {
-      soal: {
+      console.log("Mengirim formulir dengan data:", {
         konten_soal: konten_soal,
         jawaban: jawabanList,
         pembahasan: pembahasan,
-      },
-    };
+      });
 
-    await fetch(url.toString(), {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+      const url = new URL(
+        `${process.env.NEXT_PUBLIC_API_URL}/soal/${id_bank_soal}/add-soal`
+      );
 
-    console.log("Formulir berhasil dikirim");
+      const params = new URLSearchParams();
+      url.search = params.toString();
 
-    resetForm();
-    router.refresh();
-    setModal(false);
+      const requestBody = {
+        soal: {
+          konten_soal: konten_soal,
+          jawaban: jawabanList,
+          pembahasan: pembahasan,
+        },
+      };
+
+      await fetch(url.toString(), {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log("Formulir berhasil dikirim");
+
+      resetForm();
+      router.refresh();
+      setModal(false);
+    } catch (error) {
+      console.error(error);
+      // You can set an error state here to display an error message to the user
+    }
   }
 
   const resetForm = () => {

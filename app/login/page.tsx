@@ -29,7 +29,7 @@ const Login = () => {
       console.log(res);
       if (res.ok) {
         // Simpan data login di dalam cookies
-        Cookies.set("user", JSON.stringify(data));
+        Cookies.set("User", JSON.stringify(data));               
         // Redirect ke halaman beranda atau halaman lain yang diinginkan
         router.push("/");
       } else {

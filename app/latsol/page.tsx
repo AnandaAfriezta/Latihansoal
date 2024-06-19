@@ -1,74 +1,79 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import CardLatsolAdmin from "../components/card/cardLatsolAdmin";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
-import AddLatsol from "../Latsol/addLatsol";
+import AddLatsol from "./addLatsol";
+import Cookies from "js-cookie";
 
 type Props = {
-  jumlah_soal: number;
   id_latihan_soal: number;
   nama_latihansoal: string;
   durasi: number;
-  status: boolean;
+  status: string;
   id_bank_soal: number;
+  jumlah_soal: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-async function getLatsol() {
-  const res = await fetch(`${apiUrl}/latihansoal`, {
-    method: "GET",
-    cache: "no-store",
-  });
-  const data = await res.json();
-  return data;
-}
+async function getLatihanSoal() {
+  try {
+    const userCookie = Cookies.get("Kontributor");
+    console.log("Current cookie:", userCookie); // Tambahkan log ini
 
-export default function LatihansoalList() {
-  const [modal, setModal] = useState(false); // Define the modal state
-  const [props, setProps] = useState<Props[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getLatsol();
-      if (Array.isArray(data)) {
-        setProps(data);
-      } else {
-        console.error("Expected an array but received:", data);
-      }
+    if (!userCookie) {
+      throw new Error("User data not found. Please login again.");
     }
-    fetchData();
-  }, []);
 
-  function handleChange() {
-    console.log("Modal state changed");
-    setModal(!modal);
-  }
+    const userData = JSON.parse(userCookie);
+    const token = userData.token;
 
-  async function handleAddLatsol(formData: any) {
-    // Here, you would send the formData to your API to save the new latihan soal
-    const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
-      method: "POST",
+    if (!token) {
+      throw new Error("Token not found in user data.");
+    }
+
+    const res = await fetch(`${apiUrl}/latihansoal`, {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
       },
-      body: JSON.stringify(formData)
     });
 
-    if (res.ok) {
-      // Fetch the updated list of latihan soal
-      const updatedData = await getLatsol();
-      if (Array.isArray(updatedData)) {
-        setProps(updatedData);
+    if (!res.ok) {
+      if (res.status === 401) {
+        throw new Error("Unauthorized. Please login again.");
       } else {
-        console.error("Expected an array but received:", updatedData);
+        throw new Error(`Failed to fetch data: ${res.statusText}`);
       }
-      setModal(false);
     }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to get latihansoal:", error);
+    // Handle error state or redirect to login page if necessary
   }
+}
+
+
+export default function LatihanSoalList() {
+  const [latihanSoalList, setLatihanSoalList] = useState<Props[]>([]);
+
+  useEffect(() => {
+    async function fetchLatihanSoal() {
+      const data = await getLatihanSoal();
+      setLatihanSoalList(data);
+    }
+    fetchLatihanSoal();
+  }, []);
+
+  const handleAddLatihansoal = (newLatihanSoal: Props) => {
+    setLatihanSoalList((prevList) => [...prevList, newLatihanSoal]);
+  };
 
   return (
     <main>
@@ -97,9 +102,9 @@ export default function LatihansoalList() {
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
             />
           </form>
-          <AddLatsol onSubmit={handleAddLatsol}/>
           <div>
-            {props.map((prop: Props, index: number) => (
+          <AddLatsol onSubmit={handleAddLatihansoal} />
+            {latihanSoalList.map((prop: Props, index: number) => (
               <CardLatsolAdmin
                 key={index}
                 id_latihan_soal={prop.id_latihan_soal}

@@ -29,11 +29,17 @@ type Props = {
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-async function fetchLatihanSoal() {
+async function fetchLatihanSoal(token: string) {
   const res = await fetch(`${apiUrl}/latihansoal`, {
     method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    },
     cache: "no-store",
   });
+  if (!res.ok) {
+    throw new Error("Failed to fetch Latihan Soal");
+  }
   const data = await res.json();
   return data;
 }
@@ -44,40 +50,74 @@ const Home: React.FC<Props> = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const userCookies = Cookies.get("user");
-    if (userCookies) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-    const fetchData = async () => {
-      const data = await fetchLatihanSoal();
-      setLatihanSoal(data);
+    const verifyToken = async (token: string) => {
+      try {
+        const res = await fetch(`${apiUrl}/verify-token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error("Token verification failed");
+        }
+        setIsLoggedIn(true);
+      } catch (error) {
+        setIsLoggedIn(false);
+        Cookies.remove("token");
+        router.push("/login");
+      }
     };
 
-    fetchData();
-  }, []);
+    const token = Cookies.get("token");
+    if (token) {
+      verifyToken(token);
+    } else {
+      router.push("/login");
+    }
+
+    const fetchData = async () => {
+      try {
+        if (token) {
+          const data = await fetchLatihanSoal(token);
+          setLatihanSoal(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchData();
+    }
+  }, [isLoggedIn, router]);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
     if (confirmLogout) {
-      Cookies.remove("user");
+      Cookies.remove("token");
       setIsLoggedIn(false);
+      router.push("/login");
     }
   };
 
   const handleAddLatsol = async (formData: any) => {
+    const token = Cookies.get("token");
+    if (!token) return router.push("/login");
+
     try {
       const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
 
       if (res.ok) {
-        const newData = await fetchLatihanSoal();
+        const newData = await fetchLatihanSoal(token);
         setLatihanSoal(newData);
         console.log("Latihan Soal berhasil ditambahkan!");
       } else {

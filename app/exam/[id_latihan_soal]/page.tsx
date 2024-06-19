@@ -44,24 +44,48 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
       if (!token) {
         throw new Error("Token not found in user data.");
       }
-      const res = await fetch(
-        `${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`,
-        {
+
+      const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const result = await res.json();
+
+      if (result.success) {
+        const soalData = result.data.soalData;
+
+        // Check if user has completed this latsol before
+        const completedRes = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/check-completion`, {
           method: "GET",
-          cache: "no-store",
           headers: {
             "Content-Type": "application/json",
             Authorization: `${token}`,
           },
-        },
-      );
-      if (!res.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const result = await res.json();
+        });
 
-      if (result.success) {
-        setData(result.data.soalData);
+        if (!completedRes.ok) {
+          throw new Error("Failed to check completion");
+        }
+
+        const completionResult = await completedRes.json();
+
+        if (completionResult.success && completionResult.data.completed) {
+          // If completed, clear previous answers
+          soalData.forEach((soal: any) => {
+            soal.jawaban = null;
+          });
+        }
+
+        setData(soalData);
         setDuration(result.data.durasi * 60);
         setRemainingTime(result.data.durasi * 60);
       }
@@ -89,7 +113,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setRemainingTime((prevRemainingTime) =>
-        prevRemainingTime > 0 ? prevRemainingTime - 1 : 0,
+        prevRemainingTime > 0 ? prevRemainingTime - 1 : 0
       );
     }, 1000);
 

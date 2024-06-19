@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 interface AddBanksoalProps {
   onSubmit: (formData: any) => void;
@@ -26,22 +27,41 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true); // Mark the form as submitted
-    if (!formData.nama_banksoal.trim()) return; // If the field is empty, do not proceed
-    const res = await fetch(`${apiUrl}/banksoal/add-banksoal`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
 
-    if (res.ok) {
-      const newBanksoal = await res.json();
-      onSubmit(newBanksoal);
-      setModal(false);
-      resetForm();
-    } else {
-      // Handle error here
+    if (!formData.nama_banksoal.trim()) return; // If the field is empty, do not proceed
+
+    try {
+      const userCookie = Cookies.get("Kontributor");
+      if (!userCookie) {
+        throw new Error("User data not found. Please login again.");
+      }
+
+      const userData = JSON.parse(userCookie);
+      const token = userData.token;
+
+      if (!token) {
+        throw new Error("Token not found in user data.");
+      }
+
+      const res = await fetch(`${apiUrl}/banksoal/add-banksoal`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        const newBanksoal = await res.json();
+        onSubmit(newBanksoal);
+        setModal(false);
+        resetForm();
+      } else {
+        // Handle error here
+      }
+    } catch (error) {
+      console.error("Failed to add latihan soal:", error);
     }
   };
 
@@ -59,6 +79,13 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
       nama_banksoal: "",
     });
     setFormSubmitted(false); // Reset form submission state
+  };
+  
+  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      status: e.target.checked ? "1" : "0",
+    }));
   };
 
   return (
@@ -96,12 +123,10 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
                   className="mt-1 p-2 border rounded-md w-full"
                   style={{ backgroundColor: "#F2F2F2" }}
                   required
-                  
                 />
-                 {errors.konten_soal && (
-                <p className="text-red-500 text-sm">{errors.konten_soal}</p>
-              )}
-                
+                {errors.konten_soal && (
+                  <p className="text-red-500 text-sm">{errors.konten_soal}</p>
+                )}
               </div>
               <button type="submit" className="bg-[#5CB85C] text-white p-2 rounded-md">
                 Tambah Bank Soal 
