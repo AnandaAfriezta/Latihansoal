@@ -21,18 +21,15 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getLatihanSoal() {
   try {
-    const userCookie = Cookies.get("Kontributor");
-    console.log("Current cookie:", userCookie); // Tambahkan log ini
-
-    if (!userCookie) {
+    const role = Cookies.get("UserRole")
+    const token = Cookies.get("UserToken");
+    console.log("Current cookie:", token); // Added log
+    if (!token) {
       throw new Error("User data not found. Please login again.");
     }
 
-    const userData = JSON.parse(userCookie);
-    const token = userData.token;
-
-    if (!token) {
-      throw new Error("Token not found in user data.");
+    if (!role || role !== "Kontributor") {
+      throw new Error("Unauthorized")
     }
 
     const res = await fetch(`${apiUrl}/latihansoal`, {
@@ -51,22 +48,28 @@ async function getLatihanSoal() {
       }
     }
 
-    const data = await res.json();
-    return data;
+    const responseData = await res.json();
+    console.log("API response data:", responseData);
+    return responseData.data; // Extract the data array
   } catch (error) {
     console.error("Failed to get latihansoal:", error);
-    // Handle error state or redirect to login page if necessary
+    return [];
   }
 }
 
-
 export default function LatihanSoalList() {
-  const [latihanSoalList, setLatihanSoalList] = useState<Props[]>([]);
+  const [LatihanSoalList, setLatihanSoalList] = useState<Props[]>([]);
 
   useEffect(() => {
     async function fetchLatihanSoal() {
       const data = await getLatihanSoal();
-      setLatihanSoalList(data);
+      if (Array.isArray(data)) {
+        setLatihanSoalList(data);
+      } else {
+        console.error("Data is not an array:", data);
+        setLatihanSoalList([]);
+      }
+      console.log(data);
     }
     fetchLatihanSoal();
   }, []);
@@ -84,7 +87,7 @@ export default function LatihanSoalList() {
               <ArrowBackIosNewIcon className="text-black" />
             </Link>
             <h1 className="font-bold text-black text-[20px] cursor-pointer hover:underline">
-              Bank Soal
+              Latihan Soal
             </h1>
             <div className="w-8 h-8 relative rounded-full">
               <Image
@@ -103,19 +106,23 @@ export default function LatihanSoalList() {
             />
           </form>
           <div>
-          <AddLatsol onSubmit={handleAddLatihansoal} />
-            {latihanSoalList.map((prop: Props, index: number) => (
-              <CardLatsolAdmin
-                key={index}
-                id_latihan_soal={prop.id_latihan_soal}
-                id_bank_soal={prop.id_bank_soal}
-                nama_latihansoal={prop.nama_latihansoal}
-                jumlah_soal={prop.jumlah_soal}
-                durasi={prop.durasi}
-                status={prop.status}
-                tag={[]}
-              />
-            ))}
+            <AddLatsol onSubmit={handleAddLatihansoal} />
+            {LatihanSoalList.length > 0 ? (
+              LatihanSoalList.map((prop: Props, index: number) => (
+                <CardLatsolAdmin
+                  key={index}
+                  id_latihan_soal={prop.id_latihan_soal}
+                  id_bank_soal={prop.id_bank_soal}
+                  nama_latihansoal={prop.nama_latihansoal}
+                  jumlah_soal={prop.jumlah_soal}
+                  durasi={prop.durasi}
+                  status={prop.status}
+                  tag={[]}
+                />
+              ))
+            ) : (
+              <p>No data available</p>
+            )}
           </div>
         </div>
       </div>

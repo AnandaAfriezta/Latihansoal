@@ -32,7 +32,7 @@ export const AddLatsol: React.FC<AddLatsolProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const userCookie = Cookies.get("Kontributor");
+      const userCookie = Cookies.get("UserToken");
       if (!userCookie) {
         throw new Error("User data not found. Please login again.");
       }

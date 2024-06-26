@@ -25,21 +25,27 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      console.log(data);
+      console.log(data.user.role);
+      console.log(data.token);
       console.log(res);
       if (res.ok) {
-        // Simpan data login di dalam cookies
-        Cookies.set("User", JSON.stringify(data));               
-        // Redirect ke halaman beranda atau halaman lain yang diinginkan
-        router.push("/");
+        const token = data.token;
+        const role = data.user.role;
+        Cookies.set("UserToken", token);
+        Cookies.set("UserRole", role);
+        if (role == "Kontributor") {
+          router.push("/Latsol");
+        } else if (role == "User") {
+          router.push("/");
+        } else {
+          setError("Unexpected role");
+        }
       } else {
-        // Tangani pesan kesalahan dari API
-        setError(data.message || "Login gagal");
+        setError(data.message || "Login failed");
       }
     } catch (error) {
       console.error(error);
-      // Tangani kesalahan koneksi atau kesalahan lainnya
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -75,9 +81,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <label className="label font-semibold text-[#9CA3AF]">
-              Password:
-            </label>
+            <label className="label font-semibold text-[#9CA3AF]">Password:</label>
             <input
               type="password"
               value={password}

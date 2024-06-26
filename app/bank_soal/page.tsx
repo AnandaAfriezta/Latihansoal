@@ -7,7 +7,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 import AddBanksoal from "./addbanksoal";
 
-
 type Props = {
   id_bank_soal: number;
   nama_banksoal: string;
@@ -17,27 +16,45 @@ type Props = {
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getBankSoal() {
-  const res = await fetch(`${apiUrl}/banksoal`, {
-    method: "GET",
-    cache: "no-store",
-  });
-  const data = await res.json();
-  return data;
+  try {
+    const res = await fetch(`${apiUrl}/banksoal`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch Bank Soal");
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching Bank Soal:", error);
+    return [];
+  }
 }
 
 export default function BankSoalList() {
   const [bankSoalList, setBankSoalList] = useState<Props[]>([]);
 
   useEffect(() => {
-    async function fetchBankSoal() {
-      const data = await getBankSoal();
-      setBankSoalList(data);
+    async function fetchBankSoalData() {
+      try {
+        const data = await getBankSoal();
+        setBankSoalList(data);
+      } catch (error) {
+        console.error("Error setting Bank Soal data:", error);
+      }
     }
-    fetchBankSoal();
+    fetchBankSoalData();
   }, []);
 
-  const handleAddBanksoal = (newBanksoal: Props) => {
-    setBankSoalList((prevList) => [...prevList, newBanksoal]);
+  const handleAddBanksoal = async (newBanksoal: Props) => {
+    try {
+      // Simulasi tambah bank soal ke API
+      const addedBankSoal = { ...newBanksoal }; // Ganti dengan logika tambah ke API sesungguhnya
+      setBankSoalList((prevList) => [...prevList, addedBankSoal]);
+    } catch (error) {
+      console.error("Error adding Bank Soal:", error);
+    }
   };
 
   return (

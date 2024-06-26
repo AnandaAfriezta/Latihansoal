@@ -23,7 +23,8 @@ type Data = {
   tags: Tag[];
 };
 
-type Props = {
+type ApiResponse = {
+  success: boolean;
   data: Data[];
 };
 
@@ -33,98 +34,52 @@ async function fetchLatihanSoal(token: string) {
   const res = await fetch(`${apiUrl}/latihansoal`, {
     method: "GET",
     headers: {
-      "Authorization": `Bearer ${token}`,
+      Authorization: `${token}`,
     },
     cache: "no-store",
   });
   if (!res.ok) {
     throw new Error("Failed to fetch Latihan Soal");
   }
-  const data = await res.json();
-  return data;
+  const data: ApiResponse = await res.json();
+  if (!data.success) {
+    throw new Error("Failed to fetch Latihan Soal");
+  }
+  return data.data;
 }
 
-const Home: React.FC<Props> = () => {
+const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [latihanSoal, setLatihanSoal] = useState<Data[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const verifyToken = async (token: string) => {
-      try {
-        const res = await fetch(`${apiUrl}/verify-token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-        if (!res.ok) {
-          throw new Error("Token verification failed");
-        }
-        setIsLoggedIn(true);
-      } catch (error) {
-        setIsLoggedIn(false);
-        Cookies.remove("token");
-        router.push("/login");
-      }
-    };
-
-    const token = Cookies.get("token");
+    const token = Cookies.get("UserToken");
     if (token) {
-      verifyToken(token);
-    } else {
-      router.push("/login");
-    }
+      setIsLoggedIn(true);
 
-    const fetchData = async () => {
-      try {
-        if (token) {
+      const fetchData = async () => {
+        try {
           const data = await fetchLatihanSoal(token);
           setLatihanSoal(data);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
         }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
+      };
 
-    if (isLoggedIn) {
       fetchData();
+    } else {
+      setIsLoggedIn(false);
     }
-  }, [isLoggedIn, router]);
+  }, []);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
     if (confirmLogout) {
-      Cookies.remove("token");
+      Cookies.remove("UserToken");
       setIsLoggedIn(false);
       router.push("/login");
-    }
-  };
-
-  const handleAddLatsol = async (formData: any) => {
-    const token = Cookies.get("token");
-    if (!token) return router.push("/login");
-
-    try {
-      const res = await fetch(`${apiUrl}/latihansoal/add-latsol`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        const newData = await fetchLatihanSoal(token);
-        setLatihanSoal(newData);
-        console.log("Latihan Soal berhasil ditambahkan!");
-      } else {
-        console.error("Gagal menambahkan Latihan Soal");
-      }
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
     }
   };
 
@@ -165,18 +120,22 @@ const Home: React.FC<Props> = () => {
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
             />
           </form>
-          {latihanSoal.map((item: Data) => (
-            <CardLatsol
-              key={item.id_latihan_soal}
-              id_latihan_soal={item.id_latihan_soal}
-              nama_latihansoal={item.nama_latihansoal}
-              durasi={item.durasi}
-              jumlah_soal={item.jumlah_soal}
-              tags={item.tags}
-            />
-          ))}
+          {latihanSoal.length > 0 ? (
+            latihanSoal.map((item: Data) => (
+              <CardLatsol
+                key={item.id_latihan_soal}
+                id_latihan_soal={item.id_latihan_soal}
+                nama_latihansoal={item.nama_latihansoal}
+                durasi={item.durasi}
+                jumlah_soal={item.jumlah_soal}
+                tags={item.tags}
+              />
+            ))
+          ) : (
+            <p>No data available</p>
+          )}
           <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
-            <Link href="/Latsol">list latihan soal</Link>
+            {/* <Link href="/Latsol">list latihan soal</Link> */}
           </h1>
         </div>
       </div>

@@ -16,7 +16,7 @@ type Props = {
   tags: Tag[];
 };
 
-export default function CardLatsol(props: Props) {
+const CardLatsol: React.FC<Props> = (props: Props) => {
   return (
     <div className="max-w-screen-md bg-white rounded-lg border border-gray-300 p-4 flex flex-col w-full mb-8">
       <h1 className="text-[20px] font-semibold text-black text-overflow mb-2 hover:underline">
@@ -46,7 +46,7 @@ export default function CardLatsol(props: Props) {
       </div>
       <div className="flex flex-wrap gap-1">
         {props.tags &&
-          props.tags.map((tag: any, index: number) => (
+          props.tags.map((tag: Tag, index: number) => (
             <div key={index}>
               <p className="bg-slate-100 p-2 mb-2 rounded-lg w-fit text-xs">
                 {tag.nama_tag}
@@ -56,4 +56,6 @@ export default function CardLatsol(props: Props) {
       </div>
     </div>
   );
-}
+};
+
+export default CardLatsol;
