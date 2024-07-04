@@ -6,6 +6,8 @@ import CardBankSoal from "../components/card/cardBankSoal";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 import AddBanksoal from "./addbanksoal";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Props = {
   id_bank_soal: number;
@@ -17,44 +19,84 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getBankSoal() {
   try {
+    const role = Cookies.get("UserRole");
+    const token = Cookies.get("UserToken");
+    console.log("Current cookie:", token); // Added log
+    if (!token) {
+      throw new Error("User data not found. Please login again.");
+    }
+
+    if (!role || role !== "Kontributor") {
+      throw new Error("Unauthorized");
+    }
+
     const res = await fetch(`${apiUrl}/banksoal`, {
       method: "GET",
-      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
     });
+
     if (!res.ok) {
-      throw new Error("Failed to fetch Bank Soal");
+      if (res.status === 401) {
+        throw new Error("Unauthorized. Please login again.");
+      } else {
+        throw new Error(`Failed to fetch data: ${res.statusText}`);
+      }
     }
-    const data = await res.json();
-    return data;
+
+    const responseData = await res.json();
+    console.log("API response data:", responseData);
+    return responseData.data;
   } catch (error) {
-    console.error("Error fetching Bank Soal:", error);
+    console.error("Failed to get bank soal:", error);
     return [];
   }
 }
 
 export default function BankSoalList() {
   const [bankSoalList, setBankSoalList] = useState<Props[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
-    async function fetchBankSoalData() {
-      try {
-        const data = await getBankSoal();
-        setBankSoalList(data);
-      } catch (error) {
-        console.error("Error setting Bank Soal data:", error);
-      }
+    const token = Cookies.get("UserToken");
+    if (token) {
+      setIsLoggedIn(true);
+
+      const fetchData = async () => {
+        try {
+          const data = await getBankSoal();
+          if (Array.isArray(data)) {
+            setBankSoalList(data);
+          } else {
+            console.error("Error setting Bank Soal data:", data);
+            setBankSoalList([]);
+          }
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    } else {
+      setIsLoggedIn(false);
     }
-    fetchBankSoalData();
   }, []);
 
-  const handleAddBanksoal = async (newBanksoal: Props) => {
-    try {
-      // Simulasi tambah bank soal ke API
-      const addedBankSoal = { ...newBanksoal }; // Ganti dengan logika tambah ke API sesungguhnya
-      setBankSoalList((prevList) => [...prevList, addedBankSoal]);
-    } catch (error) {
-      console.error("Error adding Bank Soal:", error);
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
+    if (confirmLogout) {
+      Cookies.remove("UserToken");
+      setIsLoggedIn(false);
+      router.push("/login");
     }
+  };
+
+  const handleAddBanksoal = async (newBanksoal: Props) => {
+    setBankSoalList((prevList) => [...prevList, newBanksoal]);
   };
 
   return (
@@ -69,12 +111,22 @@ export default function BankSoalList() {
               Bank Soal
             </h1>
             <div className="w-8 h-8 relative rounded-full">
-              <Image
-                src="/avatar.png"
-                alt="Avatar"
-                layout="fill"
-                className="rounded-full"
-              />
+              {isLoggedIn ? (
+                <Image
+                  src="/avatar.png"
+                  alt="Avatar"
+                  layout="fill"
+                  className="rounded-full cursor-pointer"
+                  onClick={handleLogout}
+                />
+              ) : (
+                <p
+                  className="text-[#31B057] font-bold cursor-pointer hover:underline"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </p>
+              )}
             </div>
           </div>
           <form className="w-full">
@@ -86,14 +138,22 @@ export default function BankSoalList() {
           </form>
           <div>
             <AddBanksoal onSubmit={handleAddBanksoal} />
-            {bankSoalList.map((prop, index) => (
-              <CardBankSoal
-                key={index}
-                id_bank_soal={prop.id_bank_soal}
-                nama_banksoal={prop.nama_banksoal}
-                jumlah_soal={prop.jumlah_soal}
-              />
-            ))}
+            <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
+              <Link href="/Latsol">list latihan soal</Link>
+              </h1>
+            { bankSoalList.length > 0 ? (
+              bankSoalList.map((prop, index) => (
+                
+                <CardBankSoal
+                  key={index}
+                  id_bank_soal={prop.id_bank_soal}
+                  nama_banksoal={prop.nama_banksoal}
+                  jumlah_soal={prop.jumlah_soal}
+                />
+              ))
+            ) : (
+              <p>No data available</p>
+            )}
           </div>
         </div>
       </div>

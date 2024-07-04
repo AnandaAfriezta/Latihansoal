@@ -14,52 +14,53 @@ export default function EditBankSoal(props: Props) {
   const [nama_banksoal, setNama_Banksoal] = useState(props.nama_banksoal);
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const router = useRouter();
 
   async function handleUpdate(e: SyntheticEvent) {
     e.preventDefault();
-
     setIsMutating(true);
 
     try {
-      const userCookie = Cookies.get("Kontributor");
-      if (!userCookie) {
+      const token = Cookies.get("UserToken");
+
+      console.log("Current cookie:", token); // Added log
+      if (!token) {
         throw new Error("User data not found. Please login again.");
       }
 
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
-
-      if (!token) {
-        throw new Error("Token not found in user data.");
-      }
-    await fetch(
-      `${apiUrl}/banksoal/edit-banksoal/${props.id_bank_soal}`,
-      {
+      const response = await fetch(`${apiUrl}/banksoal/edit-banksoal/${props.id_bank_soal}`, {
         method: "PATCH",
         cache: "no-store",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `${token}`,
         },
         body: JSON.stringify({
           nama_banksoal: nama_banksoal,
         }),
-      },
-    );
-  setIsMutating(false);
-  router.refresh();
-  setModal(false);
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update Bank Soal");
+      }
+
+      setIsMutating(false);
+      router.refresh();
+      setModal(false);
     } catch (error) {
       console.error(error);
-      // Handle error, e.g., show error message to user
+      setError(error.message);
       setIsMutating(false);
     }
   }
 
   function handleChange() {
     setModal(!modal);
+    setError(null);
   }
+
   return (
     <div>
       <div onClick={handleChange}>
@@ -89,6 +90,11 @@ export default function EditBankSoal(props: Props) {
                 placeholder="Nama Bank Soal"
               />
             </div>
+            {error && (
+              <div className="text-red-500 text-sm mb-4">
+                {error}
+              </div>
+            )}
             <div className="w-full flex gap-2 justify-end">
               <button
                 type="button"

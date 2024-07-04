@@ -55,6 +55,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const token = Cookies.get("UserToken");
+    
     if (token) {
       setIsLoggedIn(true);
 

@@ -18,8 +18,7 @@ interface DetailUjianProps {
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
-  const { id_latihan_soal } = params;
-  const { nama_latihansoal } = params;
+  const { id_latihan_soal, nama_latihansoal } = params;
 
   const [startIndex, setStartIndex] = useState(0);
   const itemsPerPage = 1;
@@ -27,6 +26,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const [duration, setDuration] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -34,15 +34,10 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
 
   const fetchData = async (id_latihan_soal: number) => {
     try {
-      const userCookie = Cookies.get("user");
-      if (!userCookie) {
-        throw new Error("User data not found. Please login again.");
-      }
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
-
+      const token = Cookies.get("UserToken");
+      console.log("Current cookie:", token);
       if (!token) {
-        throw new Error("Token not found in user data.");
+        throw new Error("User data not found. Please login again.");
       }
 
       const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/get-all-soal`, {
@@ -54,44 +49,38 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
         },
       });
 
+      console.log("Fetching data:", res);
+
       if (!res.ok) {
         throw new Error("Failed to fetch data");
       }
 
       const result = await res.json();
 
+      console.log("Fetch result:", result);
+
       if (result.success) {
         const soalData = result.data.soalData;
-
-        // Check if user has completed this latsol before
-        const completedRes = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/check-completion`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        });
-
-        if (!completedRes.ok) {
-          throw new Error("Failed to check completion");
-        }
-
-        const completionResult = await completedRes.json();
-
-        if (completionResult.success && completionResult.data.completed) {
-          // If completed, clear previous answers
-          soalData.forEach((soal: any) => {
-            soal.jawaban = null;
-          });
-        }
-
         setData(soalData);
         setDuration(result.data.durasi * 60);
         setRemainingTime(result.data.durasi * 60);
+        // Check if user has already completed the exam
+        if (result.data.hasCompleted) {
+          setHasCompleted(true);
+          resetForm();  // Clear the form if the exam was already completed
+        } else {
+          setHasCompleted(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const resetForm = () => {
+    setData([]);
+    setStartIndex(0);
+    setRemainingTime(duration);
   };
 
   const handleNext = () => {

@@ -4,6 +4,8 @@ import React, { useState, SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 interface Jawaban {
   id_jawaban: number;
   konten_jawaban: string;
@@ -106,17 +108,12 @@ const AddSoal: React.FC<Props> = ({ id_bank_soal, data }) => {
     }
 
     try {
-      const userCookie = Cookies.get("Kontributor");
-      if (!userCookie) {
+      const token = Cookies.get("UserToken");
+      console.log("Current cookie:", token);
+      if (!token) {
         throw new Error("User data not found. Please login again.");
       }
 
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
-
-      if (!token) {
-        throw new Error("Token not found in user data.");
-      }
 
       console.log("Mengirim formulir dengan data:", {
         konten_soal: konten_soal,

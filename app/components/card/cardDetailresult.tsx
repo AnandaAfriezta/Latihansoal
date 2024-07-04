@@ -20,6 +20,10 @@ type Props = {
 };
 
 export default function CardDetailresult({ soalData }: Props) {
+  if (!soalData || !Array.isArray(soalData)) {
+    return <div>No data available</div>;
+  }
+
   return (
     <div className="w-full mb-8">
       {soalData.map((soal) => (
@@ -41,14 +45,14 @@ export default function CardDetailresult({ soalData }: Props) {
                   key={jawaban.id_jawaban}
                   className={`flex items-center justify-between ${
                     jawaban.jawaban_benar === 1 ? "bg-[#F2FFEC]" : ""
-                    } ${
-                      isCorrectAnswer ? "bg-[#F2FFEC]" : ""
-                    } ${
-                      isIncorrectAnswer ? "bg-[#FFEDED]" : ""
-                    }  rounded-md p-2 mb-2`}
-                  >
+                  } ${
+                    isCorrectAnswer ? "bg-[#F2FFEC]" : ""
+                  } ${
+                    isIncorrectAnswer ? "bg-[#FFEDED]" : ""
+                  }  rounded-md p-2 mb-2`}
+                >
                   <div className="flex items-center">
-                    { isUserAnswer ? (
+                    {isUserAnswer ? (
                       <Image
                         src="/right answer.png"
                         width={16}
@@ -79,11 +83,11 @@ export default function CardDetailresult({ soalData }: Props) {
                   )}
                   {isIncorrectAnswer && (
                     <Image
-                    src="/silang.png"
-                    width={16}
-                    height={16}
-                    alt="Cross"
-                  />
+                      src="/silang.png"
+                      width={16}
+                      height={16}
+                      alt="Cross"
+                    />
                   )}
                 </div>
               );

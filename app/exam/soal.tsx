@@ -11,7 +11,7 @@ interface SoalDataItem {
 
 async function getSoal(id_latihan_soal: number) {
   const res = await fetch(
-    `http://10.28.1.92:3000/ujian/${id_latihan_soal}/get-all-soal`,
+    `http://10.191.1.204:5000/ujian/${id_latihan_soal}/get-all-soal`,
     {
       method: "GET",
       cache: "no-store",

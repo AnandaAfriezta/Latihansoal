@@ -3,6 +3,7 @@
 import { SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 type Props = {
   id_latihan_soal: number;
@@ -19,37 +20,56 @@ export default function EditLatsol(props: Props) {
   const [status, setStatus] = useState(props.status);
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const router = useRouter();
 
   async function handleUpdate(e: SyntheticEvent) {
     e.preventDefault();
-
     setIsMutating(true);
 
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/latihansoal/update/${props.id_latihan_soal}`,
-      {
-        method: "PATCH",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id_bank_soal: id_bank_soal,
-          nama_latihansoal: nama_latihansoal,
-          durasi: durasi,
-          status: status,
-        }),
+    try {
+      const token = Cookies.get("UserToken");
+      console.log("Current cookie:", token); // Added log
+      if (!token) {
+        throw new Error("User data not found. Please login again.");
       }
-    );
-    setIsMutating(false);
-    router.refresh();
-    setModal(false);
+
+      const response = await fetch(
+        `${apiUrl}/latihansoal/update/${props.id_latihan_soal}`,
+        {
+          method: "PATCH",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `${token}`,
+          },
+          body: JSON.stringify({
+            id_bank_soal: id_bank_soal,
+            nama_latihansoal: nama_latihansoal,
+            durasi: durasi,
+            status: status,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update Latihan Soal");
+      }
+
+      setIsMutating(false);
+      router.refresh();
+      setModal(false);
+    } catch (error) {
+      console.error(error);
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {
     setModal(!modal);
+    setError(null);
   }
 
   return (
@@ -102,6 +122,11 @@ export default function EditLatsol(props: Props) {
                 </label>
               </div>
             </div>
+            {error && (
+              <div className="text-red-500 text-sm mb-4">
+                {error}
+              </div>
+            )}
             <div className="w-full flex gap-2 justify-end">
               <button
                 type="button"

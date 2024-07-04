@@ -22,12 +22,11 @@ export default function SubmitUjian(props: Props) {
     setIsMutating(true);
 
     try {
-      const userCookie = Cookies.get("user");
-      if (!userCookie) {
+      const token = Cookies.get("UserToken");
+      console.log("Current cookie:", token);
+      if (!token) {
         throw new Error("User data not found. Please login again.");
       }
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
 
       if (!token) {
         throw new Error("Token not found in user data.");

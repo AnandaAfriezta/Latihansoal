@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Snackbar } from "@mui/material";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 type Props = {
   id_latihan_soal: number;
@@ -14,7 +13,7 @@ type Props = {
 export default function DeleteLatsol(props: Props) {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-
+  const [error, setError] = useState<string | null>(null);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const router = useRouter();
@@ -22,19 +21,38 @@ export default function DeleteLatsol(props: Props) {
   async function handleDelete(id_latihan_soal: number) {
     setIsMutating(true);
 
-    await fetch(`${apiUrl}/latihansoal/delete/${id_latihan_soal}`, {
-      method: "DELETE",
-      cache: "no-store",
-    });
+    try {
+      const token = Cookies.get("UserToken");
 
-    setIsMutating(false);
+      console.log("Current cookie:", token); // Added log
+      if (!token) {
+        throw new Error("User data not found. Please login again.");
+      }
 
-    router.refresh();
-    setModal(false);
+      const response = await fetch(`${apiUrl}/latihansoal/delete/${id_latihan_soal}`, {
+        method: "DELETE",
+        cache: "no-store",
+        headers: {
+          "Authorization": `${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete Latihan Soal");
+      }
+
+      setIsMutating(false);
+      router.refresh();
+      setModal(false);
+    } catch (error) {
+      console.error(error);
+      setIsMutating(false);
+    }
   }
 
   function handleChange() {
     setModal(!modal);
+    setError(null);
   }
 
   return (
@@ -62,7 +80,7 @@ export default function DeleteLatsol(props: Props) {
               style={{ boxShadow: "0 3px 0 0 #B1A6A6" }}
               onClick={handleChange}
             >
-              batal
+              Batal
             </button>
             {!isMutating ? (
               <button
@@ -79,6 +97,11 @@ export default function DeleteLatsol(props: Props) {
               </button>
             )}
           </div>
+          {error && (
+            <div className="text-red-500 text-sm mt-4">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>

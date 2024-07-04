@@ -1,5 +1,4 @@
-// Import React
-import React from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -19,17 +18,13 @@ const DetailAnswer: React.FC<AnswerObject> = ({
   isSelected,
   onAnswerClick,
 }) => {
+  const [error, setError] = useState<string | null>(null);
+
   const handleSubmitAnswer = async () => {
     try {
-      const userCookie = Cookies.get("user");
-      if (!userCookie) {
-        throw new Error("User data not found. Please login again.");
-      }
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
-
+      const token = Cookies.get("UserToken");
       if (!token) {
-        throw new Error("Token not found in user data.");
+        throw new Error("User data not found. Please login again.");
       }
 
       const res = await fetch(
@@ -43,16 +38,25 @@ const DetailAnswer: React.FC<AnswerObject> = ({
           body: JSON.stringify({
             id_jawaban,
           }),
-        },
+        }
       );
       if (!res.ok) {
         throw new Error("Failed to submit answer.");
       }
-      // Handle successful submission
       console.log("Answer submitted successfully.");
+      setError(null); // Clear any previous errors on successful submission
     } catch (error: any) {
-      // Handle error
       console.error("Error submitting answer:", error.message);
+      setError("Error submitting answer. Please try again.");
+    }
+  };
+
+  const handleClick = () => {
+    if (!isSelected) {
+      setError("Please select an answer before submitting.");
+    } else {
+      onAnswerClick(id_jawaban);
+      handleSubmitAnswer();
     }
   };
 
@@ -63,18 +67,15 @@ const DetailAnswer: React.FC<AnswerObject> = ({
       >
         <input
           type="radio"
-          onClick={() => {
-            onAnswerClick(id_jawaban);
-            handleSubmitAnswer();
-          }}
+          onClick={handleClick}
           checked={isSelected}
           className="custom-radio"
         />
         <span className="flex-grow ml-5">{konten_jawaban}</span>
       </label>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 };
 
-// Export komponen DetailAnswer
 export default DetailAnswer;

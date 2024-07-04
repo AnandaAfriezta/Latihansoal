@@ -11,16 +11,12 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getResult(id_latihan_soal: number) {
   try {
-    const userCookie = Cookies.get("token");
-    if (!userCookie) {
+    const token = Cookies.get("UserToken");
+    console.log("Current cookie:", token);
+    if (!token) {
       throw new Error("User data not found. Please login again.");
     }
-    const userData = JSON.parse(userCookie);
-    const token = userData.token;
 
-    if (!token) {
-      throw new Error("Token not found in user data.");
-    }
     const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/finish`, {
       method: "GET",
       headers: {
@@ -28,8 +24,10 @@ async function getResult(id_latihan_soal: number) {
         Authorization: `${token}`,
       },
     });
+    if (!res.ok) {
+      throw new Error("Failed to fetch data from API");
+    }
     const data = await res.json();
-
     return data;
   } catch (error) {
     console.log(error);
@@ -66,19 +64,17 @@ interface jawaban {
   jawaban_user: boolean;
 }
 
-function formatDuration(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes} menit ${remainingSeconds} detik`;
-}
-
 export default function ExamResult({ params }: ExamResultProps) {
   const [result, setResult] = useState<Result | null>(null);
 
   useEffect(() => {
     getResult(params.id_latihan_soal)
       .then((data) => {
-        setResult(data.data);
+        if (data && data.data) {
+          setResult(data.data);
+        } else {
+          console.error("No data received or incorrect data structure");
+        }
         console.log(data);
       })
       .catch((error) => console.error(error));

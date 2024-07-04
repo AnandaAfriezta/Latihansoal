@@ -31,13 +31,11 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
     if (!formData.nama_banksoal.trim()) return; // If the field is empty, do not proceed
 
     try {
-      const userCookie = Cookies.get("Kontributor");
-      if (!userCookie) {
+      const token = Cookies.get("UserToken");
+      console.log("Current cookie:", token);
+      if (!token) {
         throw new Error("User data not found. Please login again.");
       }
-
-      const userData = JSON.parse(userCookie);
-      const token = userData.token;
 
       if (!token) {
         throw new Error("Token not found in user data.");

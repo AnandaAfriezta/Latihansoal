@@ -7,6 +7,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Image from "next/image";
 import AddLatsol from "./addLatsol";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Props = {
   id_latihan_soal: number;
@@ -21,8 +22,8 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getLatihanSoal() {
   try {
-    const role = Cookies.get("UserRole")
     const token = Cookies.get("UserToken");
+    const role = Cookies.get("UserRole")
     console.log("Current cookie:", token); // Added log
     if (!token) {
       throw new Error("User data not found. Please login again.");
@@ -59,20 +60,43 @@ async function getLatihanSoal() {
 
 export default function LatihanSoalList() {
   const [LatihanSoalList, setLatihanSoalList] = useState<Props[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
-    async function fetchLatihanSoal() {
-      const data = await getLatihanSoal();
-      if (Array.isArray(data)) {
-        setLatihanSoalList(data);
-      } else {
-        console.error("Data is not an array:", data);
-        setLatihanSoalList([]);
-      }
-      console.log(data);
+    const token = Cookies.get("UserToken");
+    if (token) {
+      setIsLoggedIn(true);
+
+      const fetchData = async () => {
+        try {
+          const data = await getLatihanSoal();
+          if (Array.isArray(data)) {
+            setLatihanSoalList(data);
+          } else {
+            console.error("Data is not an array:", data);
+            setLatihanSoalList([]);
+          }
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    } else {
+      setIsLoggedIn(false);
     }
-    fetchLatihanSoal();
   }, []);
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
+    if (confirmLogout) {
+      Cookies.remove("UserToken");
+      setIsLoggedIn(false);
+      router.push("/login");
+    }
+  };
 
   const handleAddLatihansoal = (newLatihanSoal: Props) => {
     setLatihanSoalList((prevList) => [...prevList, newLatihanSoal]);
@@ -90,12 +114,22 @@ export default function LatihanSoalList() {
               Latihan Soal
             </h1>
             <div className="w-8 h-8 relative rounded-full">
-              <Image
-                src="/avatar.png"
-                alt="Avatar"
-                layout="fill"
-                className="rounded-full"
-              />
+              {isLoggedIn ? (
+                <Image
+                  src="/avatar.png"
+                  alt="Avatar"
+                  layout="fill"
+                  className="rounded-full cursor-pointer"
+                  onClick={handleLogout}
+                />
+              ) : (
+                <p
+                  className="text-[#31B057] font-bold cursor-pointer hover:underline"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </p>
+              )}
             </div>
           </div>
           <form className="w-full">
@@ -107,6 +141,9 @@ export default function LatihanSoalList() {
           </form>
           <div>
             <AddLatsol onSubmit={handleAddLatihansoal} />
+            <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
+              <Link href="/bank_soal">list bank soal</Link>
+            </h1>
             {LatihanSoalList.length > 0 ? (
               LatihanSoalList.map((prop: Props, index: number) => (
                 <CardLatsolAdmin
