@@ -21,8 +21,10 @@ const CardButton: React.FC<{ id_latihan_soal: number }> = ({
         throw new Error("Token not found in user data.");
       }
 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
       const res = await fetch(
-        `http://192.168.1.2:5000/ujian/${id_latihan_soal}/enrollment`,
+        `${apiUrl}/ujian/${id_latihan_soal}/enrollment`,
         {
           method: "POST",
           headers: {

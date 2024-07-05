@@ -19,8 +19,13 @@ const DetailAnswer: React.FC<AnswerObject> = ({
   onAnswerClick,
 }) => {
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSubmitAnswer = async () => {
+  const handleSubmitAnswer = async (id_jawaban: number) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       const token = Cookies.get("UserToken");
       if (!token) {
@@ -44,36 +49,35 @@ const DetailAnswer: React.FC<AnswerObject> = ({
         throw new Error("Failed to submit answer.");
       }
       console.log("Answer submitted successfully.");
-      setError(null); // Clear any previous errors on successful submission
+      setError(null);
     } catch (error: any) {
       console.error("Error submitting answer:", error.message);
       setError("Error submitting answer. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleClick = () => {
-    if (!isSelected) {
-      setError("Please select an answer before submitting.");
-    } else {
-      onAnswerClick(id_jawaban);
-      handleSubmitAnswer();
-    }
+    onAnswerClick(id_jawaban);
+    handleSubmitAnswer(id_jawaban);
   };
 
   return (
     <div className="w-full mb-2">
       <label
-        className={`flex items-center bg-white rounded-xl border border-[#999CA1] py-2 px-4 text-black justify-between w-full mb-2 `}
+        className={`flex items-center bg-white rounded-xl border border-[#999CA1] py-2 px-4 text-black justify-between w-full mb-2 ${isSelected ? 'selected' : ''}`}
+        onClick={handleClick}
       >
         <input
           type="radio"
-          onClick={handleClick}
           checked={isSelected}
+          readOnly
           className="custom-radio"
         />
         <span className="flex-grow ml-5">{konten_jawaban}</span>
       </label>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

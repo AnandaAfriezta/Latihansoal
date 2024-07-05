@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import DetailAnswer from "./detailAnswer";
-import Cookies from "js-cookie";
 
 interface AnswerObject {
   id_latihan_soal: number;
   id_jawaban: number;
   konten_jawaban: string;
+  jawaban_user: string;  // expecting boolean in string form
   isSelected: boolean;
   onAnswerClick: (idJawaban: number) => void;
 }
@@ -23,37 +23,20 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   jawaban,
   id_latihan_soal,
 }) => {
-  // State untuk menyimpan jawaban yang dipilih untuk setiap soal
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: number;
-  }>({});
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
 
   useEffect(() => {
-    // Retrieve selectedAnswers from cookies
-    const selectedAnswersFromCookieString = Cookies.get("selectedAnswers");
-    if (selectedAnswersFromCookieString) {
-      const selectedAnswersFromCookie = JSON.parse(
-        selectedAnswersFromCookieString,
-      );
-      setSelectedAnswers(selectedAnswersFromCookie);
+    // Load the selected answer from local storage if available
+    const storedAnswerId = localStorage.getItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`);
+    if (storedAnswerId) {
+      setSelectedAnswerId(parseInt(storedAnswerId));
     }
-  }, []);
+  }, [id_soal]);
 
-  const handleAnswerClick = (index: number) => {
-    setSelectedAnswers((prevSelectedAnswers) => ({
-      ...prevSelectedAnswers,
-      [id_soal]: index, // Menyimpan indeks jawaban yang dipilih untuk soal tertentu
-    }));
-
-    // Simpan jawaban yang dipilih ke dalam cookies
-    Cookies.set(
-      "selectedAnswers",
-      JSON.stringify({ ...selectedAnswers, [id_soal]: index }),
-    );
-  };
-
-  const getSelectedAnswerIndex = () => {
-    return selectedAnswers[id_soal];
+  const handleAnswerClick = (id_jawaban: number) => {
+    setSelectedAnswerId(id_jawaban);
+    // Save selected answer to local storage
+    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`, id_jawaban.toString());
   };
 
   return (
@@ -61,14 +44,14 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
       <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
 
       <ol className="w-full flex flex-col">
-        {jawaban.map((item: AnswerObject, index: number) => (
+        {jawaban.map((item) => (
           <DetailAnswer
-            key={index}
+            key={item.id_jawaban}
             id_latihan_soal={id_latihan_soal}
             id_jawaban={item.id_jawaban}
             konten_jawaban={item.konten_jawaban}
-            isSelected={index === getSelectedAnswerIndex()}
-            onAnswerClick={() => handleAnswerClick(index)}
+            isSelected={selectedAnswerId === item.id_jawaban}
+            onAnswerClick={() => handleAnswerClick(item.id_jawaban)}
           />
         ))}
       </ol>
