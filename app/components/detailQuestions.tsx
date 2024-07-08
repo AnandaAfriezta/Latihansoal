@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DetailAnswer from "./detailAnswer";
 
 interface AnswerObject {
   id_latihan_soal: number;
   id_jawaban: number;
   konten_jawaban: string;
-  jawaban_user: string; // expecting boolean in string form
+  jawaban_user: string;  // expecting boolean in string form
   isSelected: boolean;
   onAnswerClick: (idJawaban: number) => void;
 }
@@ -28,24 +28,17 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(initialSelectedAnswerId);
 
-  useEffect(() => {
-    // Load the selected answer from local storage if available
-    const storedAnswerId = localStorage.getItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`);
-    if (storedAnswerId) {
-      setSelectedAnswerId(parseInt(storedAnswerId));
-    }
-  }, [id_soal]);
-
   const handleAnswerClick = (id_jawaban: number) => {
     setSelectedAnswerId(id_jawaban);
-    // Save selected answer to local storage
-    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`, id_jawaban.toString());
+    // Optionally, update the `jawaban` array to reflect the selected answer
+    jawaban.forEach(answer => {
+      answer.jawaban_user = (answer.id_jawaban === id_jawaban).toString();
+    });
   };
 
   return (
     <div className="w-full flex flex-col justify-start">
       <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
-
       <ol className="w-full flex flex-col">
         {jawaban.map((item) => (
           <DetailAnswer
