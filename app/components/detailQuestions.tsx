@@ -5,7 +5,7 @@ interface AnswerObject {
   id_latihan_soal: number;
   id_jawaban: number;
   konten_jawaban: string;
-  jawaban_user: string;  // expecting boolean in string form
+  jawaban_user: string; // expecting boolean in string form
   isSelected: boolean;
   onAnswerClick: (idJawaban: number) => void;
 }
@@ -23,7 +23,10 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   jawaban,
   id_latihan_soal,
 }) => {
-  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
+  // Find the initial selected answer id
+  const initialSelectedAnswerId = jawaban.find(answer => answer.jawaban_user === "true")?.id_jawaban || null;
+  
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(initialSelectedAnswerId);
 
   useEffect(() => {
     // Load the selected answer from local storage if available
@@ -36,14 +39,12 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   const handleAnswerClick = (id_jawaban: number) => {
     setSelectedAnswerId(id_jawaban);
     // Save selected answer to local storage
-    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}}`, id_jawaban.toString());
+    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`, id_jawaban.toString());
   };
 
   return (
     <div className="w-full flex flex-col justify-start">
       <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
-
-      <p>{JSON.stringify(jawaban)}</p>
 
       <ol className="w-full flex flex-col">
         {jawaban.map((item) => (
