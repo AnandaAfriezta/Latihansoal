@@ -36,12 +36,14 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   const handleAnswerClick = (id_jawaban: number) => {
     setSelectedAnswerId(id_jawaban);
     // Save selected answer to local storage
-    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}`, id_jawaban.toString());
+    localStorage.setItem(`selectedAnswer_${id_latihan_soal}_${id_soal}}`, id_jawaban.toString());
   };
 
   return (
     <div className="w-full flex flex-col justify-start">
       <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
+
+      <p>{JSON.stringify(jawaban)}</p>
 
       <ol className="w-full flex flex-col">
         {jawaban.map((item) => (

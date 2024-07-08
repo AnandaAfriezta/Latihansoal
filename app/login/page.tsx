@@ -90,13 +90,21 @@ const Login = () => {
               placeholder="Masukkan Password"
             />
           </div>
-          <button
-            onClick={handleLogin}
-            className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
-            style={{ boxShadow: "0 3px 0 0 #237D3E" }}
-          >
-            Login
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handleLogin}
+              className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
+              style={{ boxShadow: "0 3px 0 0 #237D3E" }}
+            >
+              Login
+            </button>
+            <p
+              className="text-[#31B057] font-bold cursor-pointer hover:underline"
+              onClick={() => router.push("/register")}
+            >
+              Register
+            </p>
+          </div>
         </div>
       </div>
     </div>

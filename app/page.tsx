@@ -116,12 +116,6 @@ const Home: React.FC = () => {
                   >
                     Login
                   </p>
-                  <p
-                    className="text-[#31B057] font-bold cursor-pointer hover:underline"
-                    onClick={() => router.push("/register")}
-                  >
-                    Register
-                  </p>
                 </div>
               )}
             </div>
