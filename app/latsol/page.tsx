@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import CardLatsolAdmin from "../components/card/cardLatsolAdmin";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -23,14 +23,14 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 async function getLatihanSoal() {
   try {
     const token = Cookies.get("UserToken");
-    const role = Cookies.get("UserRole")
+    const role = Cookies.get("UserRole");
     console.log("Current cookie:", token); // Added log
     if (!token) {
       throw new Error("User data not found. Please login again.");
     }
 
     if (!role || role !== "Kontributor") {
-      throw new Error("Unauthorized")
+      throw new Error("Unauthorized");
     }
 
     const res = await fetch(`${apiUrl}/latihansoal`, {
@@ -51,7 +51,7 @@ async function getLatihanSoal() {
 
     const responseData = await res.json();
     console.log("API response data:", responseData);
-    return responseData.data; // Extract the data array
+    return responseData.data;
   } catch (error) {
     console.error("Failed to get latihansoal:", error);
     return [];
@@ -61,6 +61,7 @@ async function getLatihanSoal() {
 export default function LatihanSoalList() {
   const [LatihanSoalList, setLatihanSoalList] = useState<Props[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -102,6 +103,14 @@ export default function LatihanSoalList() {
     setLatihanSoalList((prevList) => [...prevList, newLatihanSoal]);
   };
 
+  const filteredLatihanSoalList = LatihanSoalList.filter(
+    (latihansoal) =>
+      latihansoal.nama_latihansoal &&
+      latihansoal.nama_latihansoal
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <main>
       <div className="w-full bg-white py-8">
@@ -137,6 +146,8 @@ export default function LatihanSoalList() {
               type="text"
               placeholder="Ayo cari bank soalmu..."
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
           <div>
@@ -144,8 +155,8 @@ export default function LatihanSoalList() {
             <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
               <Link href="/bank_soal">list bank soal</Link>
             </h1>
-            {LatihanSoalList.length > 0 ? (
-              LatihanSoalList.map((prop: Props, index: number) => (
+            {filteredLatihanSoalList.length > 0 ? (
+              filteredLatihanSoalList.map((prop: Props, index: number) => (
                 <CardLatsolAdmin
                   key={index}
                   id_latihan_soal={prop.id_latihan_soal}

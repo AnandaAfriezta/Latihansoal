@@ -78,13 +78,6 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
     });
     setFormSubmitted(false); // Reset form submission state
   };
-  
-  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      status: e.target.checked ? "1" : "0",
-    }));
-  };
 
   return (
     <div>
@@ -127,7 +120,7 @@ export const AddBanksoal: React.FC<AddBanksoalProps> = ({ onSubmit }) => {
                 )}
               </div>
               <button type="submit" className="bg-[#5CB85C] text-white p-2 rounded-md">
-                Tambah Bank Soal 
+                Tambah Bank Soal
               </button>
             </form>
           </div>

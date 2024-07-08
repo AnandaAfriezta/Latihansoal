@@ -58,6 +58,7 @@ async function getBankSoal() {
 export default function BankSoalList() {
   const [bankSoalList, setBankSoalList] = useState<Props[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -96,13 +97,19 @@ export default function BankSoalList() {
   };
 
   const handleAddBanksoal = async (newBanksoal: Props) => {
-    setBankSoalList((prevList) => [...prevList, newBanksoal]);
+    setBankSoalList((prevList) => [newBanksoal, ...prevList]);
   };
+
+  const filteredBankSoalList = bankSoalList.filter(
+    (banksoal) =>
+      banksoal.nama_banksoal &&
+      banksoal.nama_banksoal.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <main>
       <div className="w-full bg-white py-8">
-        <div className="w-full max-w-screen-md mx-auto px-4">
+        <div className="w-full max-w-screen-md mx-auto px4">
           <div className="flex w-full items-center justify-between mt-3 mb-12">
             <Link href={"/"}>
               <ArrowBackIosNewIcon className="text-black" />
@@ -134,16 +141,17 @@ export default function BankSoalList() {
               type="text"
               placeholder="Ayo cari bank soalmu..."
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
           <div>
             <AddBanksoal onSubmit={handleAddBanksoal} />
             <h1 className="text-slate-400 hover:underline cursor-pointer mt-4">
               <Link href="/Latsol">list latihan soal</Link>
-              </h1>
-            { bankSoalList.length > 0 ? (
-              bankSoalList.map((prop, index) => (
-                
+            </h1>
+            {filteredBankSoalList.length > 0 ? (
+              filteredBankSoalList.map((prop, index) => (
                 <CardBankSoal
                   key={index}
                   id_bank_soal={prop.id_bank_soal}

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import SearchLatsol from "./components/searchLatsol";
 import CardLatsol from "./components/card/cardLatsol";
 import AddLatsol from "./Latsol/addLatsol";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -51,6 +50,7 @@ async function fetchLatihanSoal(token: string) {
 const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [latihanSoal, setLatihanSoal] = useState<Data[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -84,6 +84,10 @@ const Home: React.FC = () => {
     }
   };
 
+  const filteredLatihanSoal = latihanSoal.filter((item) =>
+    item.nama_latihansoal.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <main>
       <div className="w-full bg-white py-8">
@@ -105,12 +109,20 @@ const Home: React.FC = () => {
                   onClick={handleLogout}
                 />
               ) : (
-                <p
-                  className="text-[#31B057] font-bold cursor-pointer hover:underline"
-                  onClick={() => router.push("/login")}
-                >
-                  Login
-                </p>
+                <div className="flex items-center space-x-4">
+                  <p
+                    className="text-[#31B057] font-bold cursor-pointer hover:underline"
+                    onClick={() => router.push("/login")}
+                  >
+                    Login
+                  </p>
+                  <p
+                    className="text-[#31B057] font-bold cursor-pointer hover:underline"
+                    onClick={() => router.push("/register")}
+                  >
+                    Register
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -119,10 +131,12 @@ const Home: React.FC = () => {
               type="text"
               placeholder="Ayo cari Latihan soal soalmu..."
               className="w-full rounded-full border bg-white border-gray-300 p-3 placeholder-[#BABEC6] mb-8 text-black"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
-          {latihanSoal.length > 0 ? (
-            latihanSoal.map((item: Data) => (
+          {filteredLatihanSoal.length > 0 ? (
+            filteredLatihanSoal.map((item: Data) => (
               <CardLatsol
                 key={item.id_latihan_soal}
                 id_latihan_soal={item.id_latihan_soal}
