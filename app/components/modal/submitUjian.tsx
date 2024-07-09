@@ -1,35 +1,50 @@
-"use client";
-
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 import Cookies from "js-cookie";
 
 type Props = {
   id_latihan_soal: number;
-  nama_latihansoal: string;
+  nama_latihan_soal: string;
   isDisabled: boolean;
+  totalSoal: number;
+  jawabanUser: number;
+  onCheckAnswers: () => void; // Fungsi untuk memperbarui state jawabanUser
 };
 
-export default function SubmitUjian(props: Props) {
+const SubmitUjian: React.FC<Props> = ({
+  id_latihan_soal,
+  nama_latihan_soal,
+  isDisabled,
+  totalSoal,
+  jawabanUser,
+  onCheckAnswers,
+}) => {
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
-  const router = useRouter();
+  const [showIncompleteWarning, setShowIncompleteWarning] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-  async function handleSubmit(id_latihan_soal: number) {
+  useEffect(() => {
+    if (modal && jawabanUser < totalSoal) {
+      setShowIncompleteWarning(true);
+    } else {
+      setShowIncompleteWarning(false);
+    }
+  }, [modal, jawabanUser, totalSoal]);
+
+  async function handleSubmit() {
     setIsMutating(true);
 
     try {
       const token = Cookies.get("UserToken");
-      console.log("Current cookie:", token);
       if (!token) {
         throw new Error("User data not found. Please login again.");
       }
 
-      if (!token) {
-        throw new Error("Token not found in user data.");
+      if (jawabanUser < totalSoal) {
+        setShowIncompleteWarning(true);
+        return;
       }
 
       const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/nilai`, {
@@ -44,10 +59,6 @@ export default function SubmitUjian(props: Props) {
         throw new Error("Failed to submit answer.");
       }
 
-      // Set cookie here if needed
-      Cookies.set("submitted", "true");
-
-      router.refresh();
       setModal(false);
     } catch (error: any) {
       console.error("Error submitting answer:", error.message);
@@ -57,6 +68,7 @@ export default function SubmitUjian(props: Props) {
   }
 
   function handleChange() {
+    onCheckAnswers(); // Memanggil fungsi untuk memperbarui state jawabanUser saat modal terbuka
     setModal(!modal);
   }
 
@@ -64,7 +76,7 @@ export default function SubmitUjian(props: Props) {
     <div>
       <button
         className={`bg-[#5CB85C] px-6 py-3 rounded-xl text-white font-medium text-md ${
-          isMutating || props.isDisabled ? "disabled" : ""
+          isMutating || isDisabled ? "disabled" : ""
         }`}
         onClick={handleChange}
         style={{
@@ -84,8 +96,12 @@ export default function SubmitUjian(props: Props) {
       <div className="modal">
         <div className="modal-box bg-slate-100">
           <h3 className="font-bold text-lg text-gray-800">
-            Are you sure you want to submit {props.nama_latihansoal} ?
+            Apakah Anda Yakin Ingin Mengirim ?
           </h3>
+          {showIncompleteWarning && (
+            <p className="text-red-500">Ada {totalSoal - jawabanUser} soal yang belum dikerjakan!</p>
+
+          )}
           <div className="modal-action">
             <button
               type="button"
@@ -96,14 +112,14 @@ export default function SubmitUjian(props: Props) {
               Close
             </button>
             {!isMutating ? (
-              <Link href={`/exam/${props.id_latihan_soal}/result`}>
+              <Link href={`/exam/${id_latihan_soal}/result`}>
                 <button
                   type="button"
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
                   style={{ boxShadow: "0 3px 0 0 #237D3E" }}
-                  onClick={() => handleSubmit(props.id_latihan_soal)}
+                  onClick={handleSubmit}
                 >
-                  Submit
+                  Kirim
                 </button>
               </Link>
             ) : (
@@ -116,4 +132,6 @@ export default function SubmitUjian(props: Props) {
       </div>
     </div>
   );
-}
+};
+
+export default SubmitUjian;
