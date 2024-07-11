@@ -89,7 +89,7 @@ const Home: React.FC = () => {
 
   return (
     <main>
-      <div className="w-full h-full bg-white py-8">
+      <div className="w-full max-h-full bg-white py-8">
         <div className="w-full max-w-screen-md mx-auto px-4">
           <div className="flex w-full items-center justify-between mt-3 mb-12">
             <Link href={"/"}>

@@ -33,7 +33,7 @@ const SubmitUjian: React.FC<Props> = ({
     }
   }, [modal, jawabanUser, totalSoal]);
 
-  async function handleSubmit() {
+  async function handleSubmit(id_latihan_soal: number) {
     setIsMutating(true);
 
     try {
@@ -42,17 +42,14 @@ const SubmitUjian: React.FC<Props> = ({
         throw new Error("User data not found. Please login again.");
       }
 
-      if (jawabanUser < totalSoal) {
-        setShowIncompleteWarning(true);
-        return;
-      }
-
+      // Lakukan validasi di sini untuk memastikan semua jawaban diisi
       const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/nilai`, {
         method: "POST",
         cache: "no-store",
         headers: {
           Authorization: `${token}`,
         },
+        body: JSON.stringify({ jawabanUser }) // Kirim jawabanUser ke backend
       });
 
       if (!res.ok) {
@@ -100,7 +97,6 @@ const SubmitUjian: React.FC<Props> = ({
           </h3>
           {showIncompleteWarning && (
             <p className="text-red-500">Ada {totalSoal - jawabanUser} soal yang belum dikerjakan!</p>
-
           )}
           <div className="modal-action">
             <button
@@ -117,7 +113,7 @@ const SubmitUjian: React.FC<Props> = ({
                   type="button"
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"
                   style={{ boxShadow: "0 3px 0 0 #237D3E" }}
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit(id_latihan_soal)}
                 >
                   Kirim
                 </button>

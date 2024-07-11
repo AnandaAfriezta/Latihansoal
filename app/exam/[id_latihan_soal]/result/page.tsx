@@ -6,6 +6,9 @@ import CardDetailresult from "@/app/components/card/cardDetailresult";
 import Cookies from "js-cookie";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import Link from "next/link";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -85,65 +88,76 @@ export default function ExamResult({ params }: ExamResultProps) {
   }
 
   return (
-    <div className="bg-slate-100">
-      <div></div>
-      <div className="flex justify-center bg-slate-100">
-        <div className="bg-white p-8 rounded-xl shadow-md" style={{ height: "350px", width: "450px" }}>
-          <h1 className="text-2xl font-semibold mb-3 text-black text-center">
-            {result.nama_latihansoal}
-          </h1>
-          <div className="flex justify-center my-4">
-            <div style={{ width: 100, height: 100 }}>
-              <CircularProgressbar
-                value={result.nilai_akhir}
-                text={`${result.nilai_akhir}%`}
-                styles={buildStyles({
-                  textColor: "black",
-                  pathColor: "#4caf50",
-                  trailColor: "#d6d6d6",
-                })}
-              />
+    <div className="w-full h-full bg-slate-100 p-8">
+      <div className="w-full max-w-screen-md mx-auto px-4 bg-slate-100">
+        
+        <div className="grid w-full">
+          <Link href="/">
+            <ArrowBackIosNewIcon className="text-black cursor-pointer mb-5" />
+          </Link>
+
+          <div className="flex justify-center bg-white p-8 rounded-xl shadow-md">
+            <div className="bg-white p-8 rounded-xl max-w-screen-md">
+              <h1 className="text-2xl font-semibold text-black text-center">
+                {result.nama_latihansoal}
+              </h1>
+              <div className="flex justify-center my-4">
+                <div style={{ width: 100, height: 100 }}>
+                  <CircularProgressbar
+                    value={result.nilai_akhir}
+                    text={`${result.nilai_akhir}%`}
+                    styles={buildStyles({
+                      textColor: "black",
+                      pathColor: "#4caf50",
+                      trailColor: "#E86262",
+                    })}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="text-black font-bold flex items-center">
+                  <Image
+                    src="/centang.png"
+                    width={16}
+                    height={16}
+                    alt="Benar"
+                    className="mr-1"
+                  />
+                  <p>{result.jumlahBenar} Benar</p>
+                </div>
+                <div className="text-black font-bold flex items-center">
+                  <Image
+                    src="/silang.png"
+                    width={16}
+                    height={16}
+                    alt="Salah"
+                    className="mr-1"
+                  />
+                  <p>{result.jumlahSalah} Salah</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center text-center mt-4">
+                <div className="flex items-center">
+                  <Image
+                    src="/time.png"
+                    width={16}
+                    height={16}
+                    alt="Durasi"
+                    className="mr-1"
+                  />
+                  <p className="text-lg font-semibold text-black">
+                    {result.durasi}
+                  </p>
+                </div>
+                <h2 className="text-lg text-black mt-2">waktu pengerjaan</h2>
+              </div>
             </div>
           </div>
-          <div className="flex justify-between items-center">
-            <div className="text-black font-bold flex items-center">
-              <Image
-                src={"/centang.png"}
-                width={16}
-                height={16}
-                alt={""}
-                className="mr-1"
-              />
-              <p>{result.jumlahBenar} Benar</p>
-            </div>
-            <div className="text-black font-bold flex items-center">
-              <Image
-                src={"/silang.png"}
-                width={16}
-                height={16}
-                alt={""}
-                className="mr-1"
-              />
-              <p>{result.jumlahSalah} Salah</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center text-center mt-4">
-            <Image
-              src={"/time.png"}
-              width={16}
-              height={16}
-              alt={""}
-              className="mr-1"
-            />
-            <p className="text-lg font-semibold text-black">
-              {result.durasi}
-            </p>
-          </div>
-          <h2 className="text-lg text-black text-center mt-2">waktu pengerjaan</h2>
+          
         </div>
-      </div>
-      <div className="container mx-auto mt-8 px-4">
-        <CardDetailresult soalData={result.soalData} />
+          <div className="container mx-auto mt-8">
+            <CardDetailresult soalData={result.soalData} />
+          </div>
       </div>
     </div>
   );
