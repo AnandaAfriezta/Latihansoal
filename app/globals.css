@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-div {
-  background-color: slate-100;
-}
 @media screen and (max-width: 540px) {
   .text-overflow {
     overflow: hidden;

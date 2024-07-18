@@ -28,6 +28,9 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const [hasCompleted, setHasCompleted] = useState(false);
   const [namaLatihanSoal, setNamaLatihanSoal] = useState('');
   const [answeredCount, setAnsweredCount] = useState(0);
+  
+  // Memuat file suara
+  const selectSound = new Audio("/sounds/select-sound.mp3");
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -91,12 +94,8 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   }, [id_latihan_soal]);
 
   useEffect(() => {
-    // const answeredCount = data.filter((soal: { jawaban: any[]; }) => soal.jawaban.some(jawaban => jawaban.jawaban_user === true)).length;
-    // setAnsweredCount(answeredCount);
-    // console.log(answeredCount)
     console.log("data change")
-  }, [data])
-  
+  }, [data]);
 
   const resetForm = () => {
     setData([]);
@@ -137,6 +136,10 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const answeredCountTest = data.filter((soal: { jawaban: any[]; }) => soal.jawaban.some(jawaban => jawaban.jawaban_user === true)).length
 
   const answeredPercentage = (answeredCountTest / data.length) * 100;
+
+  const playSound = () => {
+    selectSound.play();
+  };
 
   return (
     <div className="w-full h-screen bg-white py-8">
@@ -223,6 +226,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               jawaban={item.jawaban}
               id_latihan_soal={params.id_latihan_soal}
               onAnswerQuestion={handleAnswerQuestion}
+              playSound={playSound} // Tambahkan prop playSound
             />
           ))}
         </div>

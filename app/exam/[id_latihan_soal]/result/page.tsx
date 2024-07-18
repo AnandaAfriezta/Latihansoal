@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import CardDetailresult from "@/app/components/card/cardDetailresult";
 import Cookies from "js-cookie";
@@ -8,7 +8,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Link from "next/link";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
+import { toPng } from "html-to-image";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -69,6 +69,8 @@ interface jawaban {
 
 export default function ExamResult({ params }: ExamResultProps) {
   const [result, setResult] = useState<Result | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getResult(params.id_latihan_soal)
@@ -83,6 +85,50 @@ export default function ExamResult({ params }: ExamResultProps) {
       .catch((error) => console.error(error));
   }, [params.id_latihan_soal]);
 
+  const handleDownloadImage = async () => {
+    if (resultRef.current === null) {
+      return;
+    }
+
+    try {
+      const dataUrl = await toPng(resultRef.current);
+      setImageUrl(dataUrl);
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "result.png";
+      link.click();
+    } catch (error) {
+      console.error("Failed to generate image", error);
+    }
+  };
+
+  const handleShareToTwitter = () => {
+    if (imageUrl) {
+      const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent("Check out my exam result!")}`;
+      window.open(twitterShareUrl, "_blank");
+    }
+  };
+
+  const handleShareToFacebook = () => {
+    if (imageUrl) {
+      const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}`;
+      window.open(facebookShareUrl, "_blank");
+    }
+  };
+
+  const handleShareToWhatsApp = () => {
+    if (imageUrl) {
+      const waShareUrl = `https://wa.me/?text=${encodeURIComponent("Check out my exam result! " + imageUrl)}`;
+      window.open(waShareUrl, "_blank");
+    }
+  };
+
+  const handleShareToInstagram = () => {
+    if (imageUrl) {
+      alert("Instagram tidak mendukung berbagi gambar langsung. Silakan unduh gambar terlebih dahulu, kemudian unggah secara manual ke Instagram.");
+    }
+  };
+
   if (!result) {
     return <div>Loading...</div>;
   }
@@ -96,13 +142,13 @@ export default function ExamResult({ params }: ExamResultProps) {
             <ArrowBackIosNewIcon className="text-black cursor-pointer mb-5" />
           </Link>
 
-          <div className="flex justify-center bg-white p-8 rounded-xl shadow-md">
+          <div ref={resultRef} className="flex justify-center bg-white p-8 rounded-xl shadow-md">
             <div className="bg-white p-8 rounded-xl max-w-screen-md">
               <h1 className="text-2xl font-semibold text-black text-center">
                 {result.nama_latihansoal}
               </h1>
               <div className="flex justify-center my-4">
-                <div style={{ width: 100, height: 100 }}>
+                <div style={{ width: 200, height: 200 }}>
                   <CircularProgressbar
                     value={result.nilai_akhir}
                     text={`${result.nilai_akhir}%`}
@@ -153,11 +199,37 @@ export default function ExamResult({ params }: ExamResultProps) {
               </div>
             </div>
           </div>
-          
-        </div>
-          <div className="container mx-auto mt-8">
-            <CardDetailresult soalData={result.soalData} />
+          <button 
+            onClick={handleDownloadImage}
+            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+            Download Result
+          </button>
+          <div className="flex mt-4 space-x-2">
+            <button 
+              onClick={handleShareToTwitter}
+              className="bg-blue-400 text-white py-2 px-4 rounded">
+              Share to Twitter
+            </button>
+            <button 
+              onClick={handleShareToFacebook}
+              className="bg-blue-600 text-white py-2 px-4 rounded">
+              Share to Facebook
+            </button>
+            <button 
+              onClick={handleShareToWhatsApp}
+              className="bg-green-500 text-white py-2 px-4 rounded">
+              Share to WhatsApp
+            </button>
+            <button 
+              onClick={handleShareToInstagram}
+              className="bg-pink-500 text-white py-2 px-4 rounded">
+              Share to Instagram
+            </button>
           </div>
+        </div>
+        <div className="container mx-auto mt-8">
+          <CardDetailresult soalData={result.soalData} />
+        </div>
       </div>
     </div>
   );
