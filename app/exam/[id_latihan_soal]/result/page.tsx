@@ -172,7 +172,7 @@ export default function ExamResult({ params }: ExamResultProps) {
               <ArrowBackIosNewIcon className="text-black cursor-pointer mb-5" />
             </Link>
 
-            <div className="card bg-white p-8 rounded-xl max-w-screen-md shadow-lg" ref={resultRef}>
+            <div className="card bg-white p-8 rounded-xl max-w-screen-md shadow-lg" >
               <h1 className="text-2xl font-semibold text-black text-center">
                 {result.nama_latihansoal}
               </h1>
