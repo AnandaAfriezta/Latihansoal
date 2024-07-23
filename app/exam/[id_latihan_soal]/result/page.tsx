@@ -231,7 +231,7 @@ export default function ExamResult({ params }: ExamResultProps) {
             </div>
           </div>
         </div>  
-        <div className="container mx-auto mt-8">
+        <div className=" container mx-auto mt-8">
           <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />
         </div>
         <div className="container mx-auto mt-8">

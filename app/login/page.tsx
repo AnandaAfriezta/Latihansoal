@@ -31,8 +31,12 @@ const Login = () => {
       if (res.ok) {
         const token = data.token;
         const role = data.user.role;
+        const username = data.user.username;
+        const email = data.user.email;
         Cookies.set("UserToken", token);
         Cookies.set("UserRole", role);
+        Cookies.set("UserName", username);
+        Cookies.set("UserEmail", email);
         if (role == "Kontributor") {
           router.push("/Latsol");
         } else if (role == "User") {
