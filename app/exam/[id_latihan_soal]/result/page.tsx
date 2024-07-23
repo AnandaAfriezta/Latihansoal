@@ -1,4 +1,3 @@
-// examdetail.tsx
 "use client"; // Add this line at the top
 
 import React, { useEffect, useState, useRef } from "react";
@@ -77,6 +76,13 @@ interface jawaban {
   jawaban_user: boolean;
 }
 
+// Fungsi untuk memformat durasi dari detik ke menit dan detik
+function formatDuration(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = (seconds % 60);
+  return `${String(minutes).padStart(2, '0')} : ${String(remainingSeconds).padStart(2, '0')}`;
+}
+
 export default function ExamResult({ params }: ExamResultProps) {
   const [result, setResult] = useState<Result | null>(null);
   const [currentScore, setCurrentScore] = useState<number>(0);
@@ -91,9 +97,9 @@ export default function ExamResult({ params }: ExamResultProps) {
         if (data && data.data) {
           setResult(data.data);
           if (data.data.nilai_akhir > 80) {
-            setAudioSrc("/happysong.mp3");
+            setAudioSrc("/sounds/happyEffect.mp3");
           } else {
-            setAudioSrc("/badsong.mp3");
+            setAudioSrc("/sounds/sadEffect.mp3");
           }
 
           let score = 0;
@@ -152,13 +158,12 @@ export default function ExamResult({ params }: ExamResultProps) {
             <Link href="/">
               <ArrowBackIosNewIcon className="text-black cursor-pointer mb-5" />
             </Link>
-
-            <div className="card bg-white p-8 rounded-xl max-w-screen-md shadow-lg">
-              <h1 className="text-2xl font-semibold text-black text-center">
+            <div className="card bg-white p-8 rounded-2xl max-w-screen-md shadow-lg">
+              <h1 className="text-xl font-semibold text-black text-center">
                 {result.nama_latihansoal}
               </h1>
               <div className="flex justify-center my-4">
-                <div style={{ width: 100, height: 100 }}>
+                <div style={{ width: 150, height: 150 }}>
                   <CircularProgressbar
                     value={currentScore}
                     text={`${currentScore}%`}
@@ -170,43 +175,53 @@ export default function ExamResult({ params }: ExamResultProps) {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-4">
-                <div className="text-black font-bold flex items-center">
-                  <Image
-                    src="/centang.png"
-                    width={16}
-                    height={16}
-                    alt="Benar"
-                    className="mr-1"
-                  />
-                  <p>{result.jumlahBenar} Benar</p>
+              <div className="flex justify-center items-center text-black font-semibold gap-3">
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <p>{result.jumlahBenar}</p>
+                    <Image
+                      src="/centanghijau.svg"
+                      width={16}
+                      height={16}
+                      alt="Benar"
+                    />                   
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Benar</p>                          
+                  </div>
                 </div>
-                <div className="text-black font-bold flex items-center">
-                  <Image
-                    src="/silang.png"
-                    width={16}
-                    height={16}
-                    alt="Salah"
-                    className="mr-1"
-                  />
-                  <p>{result.jumlahSalah} Salah</p>
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <p>{result.jumlahSalah}</p>
+                    <Image
+                      src="/silangmerah.svg"
+                      width={14}
+                      height={14}
+                      alt="Salah"
+                    />                   
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Salah</p>                          
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center text-center mt-4">
-                <div className="flex items-center mb-2">
-                  <Image
-                    src="/time.png"
-                    width={16}
-                    height={16}
-                    alt="Durasi"
-                    className="mr-1"
-                  />
-                  <p className="text-lg font-semibold text-black">
-                    {result.durasi}
-                  </p>
+              <div className="flex justify-center items-center my-4 text-black font-semibold">
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <Image
+                      src="/timerhitam.svg"
+                      width={16}
+                      height={16}
+                      alt="Benar"
+                      />                   
+                    <p>{formatDuration(result.durasi)}</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Waktu Pengerjaan</p>                          
+                  </div>
                 </div>
-                <h2 className="text-lg text-black">Waktu Pengerjaan</h2>
               </div>
+
             </div>
             <div className="mt-4 p-4 border rounded-lg text-center">
               <h3 className="text-lg font-semibold mb-2">Share your result</h3>
@@ -231,11 +246,11 @@ export default function ExamResult({ params }: ExamResultProps) {
             </div>
           </div>
         </div>  
-        <div className=" container mx-auto mt-8">
-          <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />
+        <div className="w-full max-w-screen-md mx-auto px-4">
+          <CardDetailresult soalData={result.soalData} />
         </div>
-        <div className="container mx-auto mt-8">
-        <CardDetailresult soalData={result.soalData} />
+        <div className="w-full max-w-screen-md mx-auto px-4">
+          <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />
         </div>
       </div>
       {audioSrc && <audio src={audioSrc} autoPlay />}

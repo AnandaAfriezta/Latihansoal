@@ -15,7 +15,9 @@ interface DetailQuestionsProps {
   konten_soal: string;
   jawaban: AnswerObject[];
   id_latihan_soal: number;
-  onAnswerQuestion: () => void;}
+  onAnswerQuestion: () => void;
+  playSound: () => void; // Tambahkan prop untuk memainkan suara
+}
 
 const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   id_soal,
@@ -23,6 +25,7 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
   jawaban,
   id_latihan_soal,
   onAnswerQuestion,
+  playSound, // Tambahkan prop untuk memainkan suara
 }) => {
   // Find the initial selected answer id
   const initialSelectedAnswerId = jawaban.find(answer => answer.jawaban_user === true)?.id_jawaban || null;
@@ -41,12 +44,12 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
     jawaban.forEach(answer => {
       answer.jawaban_user = answer.id_jawaban === id_jawaban;
     });
+    playSound(); // Panggil fungsi untuk memainkan suara ketika jawaban dipilih
   };
 
   return (
     <div className="w-full flex flex-col justify-start">
-      <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
-      <p>{JSON.stringify(jawaban)}</p>
+      <p className="text-gray-800 font-semibold mb-8 text-sm">{konten_soal}</p>
       <ol className="w-full flex flex-col">
         {jawaban.map((item) => (
           <DetailAnswer

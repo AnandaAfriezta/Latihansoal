@@ -93,7 +93,7 @@ const Home: React.FC = () => {
         <div className="w-full max-w-screen-md mx-auto px-4">
           <div className="flex w-full items-center justify-between mt-3 mb-12">
             <Link href={"/"}>
-              <ArrowBackIosNewIcon className="text-black" />
+              {/* <ArrowBackIosNewIcon className="text-black" /> */}
             </Link>
             <h1 className="font-bold text-black text-[20px] cursor-pointer hover:underline">
               Latihan Soal
