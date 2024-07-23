@@ -1,9 +1,5 @@
-"use client";
-
-import React, { useEffect, useState, useRef, forwardRef } from "react";
-import Image from "next/image";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import React, { useEffect, useState, forwardRef, Ref } from "react";
+import { toPng } from "html-to-image";
 import Cookies from "js-cookie";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -46,7 +42,23 @@ interface CardNilaiUserProps {
   id_latihan_soal: number;
 }
 
-// Use forwardRef to pass the ref to the div
+export const handleDownload = (ref: Ref<HTMLDivElement | null>) => {
+  if (ref && typeof ref !== "function" && ref.current) {
+    toPng(ref.current, { backgroundColor: 'white' })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = "card.png";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Failed to convert to PNG", error);
+      });
+  } else {
+    console.log("Reference to the component is not available");
+  }
+};
+
 const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latihan_soal }, ref) => {
   const [result, setResult] = useState<Result | null>(null);
   const [currentScore, setCurrentScore] = useState<number>(0);
@@ -77,10 +89,81 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
   }
 
   return (
-    <div ref={ref}></div>
+    <div
+      ref={ref}
+      style={{
+        backgroundImage: "url('/bgdownloadresult.png')",
+        backgroundSize: "cover",
+        width: "430px",
+        height: "932px",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      <div
+        style={{
+          width: "377px",
+          height: "528px",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          padding: "20px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          position: "relative"
+        }}
+      >
+        {/* Title at the top */}
+        <h2
+          style={{
+            fontFamily: "Nunito, sans-serif",
+            color: "black",
+            fontSize: "24px",
+            marginBottom: "20px",
+            marginTop: "0"
+          }}
+        >
+          {result.nama_latihansoal}
+        </h2>
+        {/* Content centered vertically */}
+        <div
+          style={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "Nunito, sans-serif",
+              color: "black",
+              fontSize: "32px",
+              fontWeight: "bold",
+              marginBottom: "px"
+            }}
+          >
+           {currentScore} %
+          </div>
+          <div
+            style={{
+              fontFamily: "Nunito, sans-serif",
+              color: "black",
+              fontSize: "18px",
+            }}
+          >
+            Username: {result.username}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 });
 
 CardNilaiUser.displayName = "CardNilaiUser";
 
-export default CardNilaiUser;
+export { CardNilaiUser };

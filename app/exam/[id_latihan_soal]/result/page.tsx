@@ -1,4 +1,5 @@
-"use client";
+// examdetail.tsx
+"use client"; // Add this line at the top
 
 import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
@@ -17,15 +18,14 @@ import {
   TwitterShareButton,
   TwitterIcon,
 } from "react-share";
+import { CardNilaiUser, handleDownload } from "@/app/components/card/cardDownloadResult";
 import { toPng } from "html-to-image";
-import axios from "axios";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-async function getResult(id_latihan_soal) {
+async function getResult(id_latihan_soal: number) {
   try {
     const token = Cookies.get("UserToken");
-    console.log("Current cookie:", token);
     if (!token) {
       throw new Error("User data not found. Please login again.");
     }
@@ -83,6 +83,7 @@ export default function ExamResult({ params }: ExamResultProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const [audioSrc, setAudioSrc] = useState<string>("");
+  const cardRef = useRef<HTMLDivElement | null>(null); // New ref for CardNilaiUser
 
   useEffect(() => {
     getResult(params.id_latihan_soal)
@@ -106,45 +107,25 @@ export default function ExamResult({ params }: ExamResultProps) {
         } else {
           console.error("No data received or incorrect data structure");
         }
-        console.log(data);
       })
       .catch((error) => console.error(error));
   }, [params.id_latihan_soal]);
 
-  const handleGenerateImage = async () => {
+  const handleShareToInstagramStory = async () => {
     if (resultRef.current === null) {
       return;
     }
 
     try {
       const dataUrl = await toPng(resultRef.current);
-      setImageUrl(dataUrl);
-      return dataUrl;
+      if (dataUrl) {
+        const link = document.createElement("a");
+        link.href = `https://instagram.com/stories/create?backgroundImageUrl=${encodeURIComponent(dataUrl)}&stickerImageUrl=${encodeURIComponent(dataUrl)}&content_type=image/png`;
+        link.target = "_blank";
+        link.click();
+      }
     } catch (error) {
-      console.error("Failed to generate image", error);
-      return null;
-    }
-  };
-
-  const handleShareAndDownload = async () => {
-    const dataUrl = await handleGenerateImage();
-
-    if (dataUrl) {
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = "result.png";
-      link.click();
-    }
-  };
-
-  const handleShareToInstagramStory = async () => {
-    const dataUrl = await handleGenerateImage();
-
-    if (dataUrl) {
-      const link = document.createElement("a");
-      link.href = `https://instagram.com/stories/create?backgroundImageUrl=${encodeURIComponent(dataUrl)}&stickerImageUrl=${encodeURIComponent(dataUrl)}&content_type=image/png`;
-      link.target = "_blank";
-      link.click();
+      console.error("Failed to generate image for Instagram story", error);
     }
   };
 
@@ -172,7 +153,7 @@ export default function ExamResult({ params }: ExamResultProps) {
               <ArrowBackIosNewIcon className="text-black cursor-pointer mb-5" />
             </Link>
 
-            <div className="card bg-white p-8 rounded-xl max-w-screen-md shadow-lg" >
+            <div className="card bg-white p-8 rounded-xl max-w-screen-md shadow-lg">
               <h1 className="text-2xl font-semibold text-black text-center">
                 {result.nama_latihansoal}
               </h1>
@@ -231,17 +212,17 @@ export default function ExamResult({ params }: ExamResultProps) {
               <h3 className="text-lg font-semibold mb-2">Share your result</h3>
               <p className="mb-4">{title}</p>
               <div className="flex justify-center mb-4">
-                <FacebookShareButton url={shareUrl} quote={title} onClick={handleShareAndDownload} className="mr-4">
+                <FacebookShareButton url={shareUrl} quote={title} onClick={() => handleDownload(cardRef)} className="mr-4">
                   <FacebookIcon size={22} round />
                 </FacebookShareButton>
-                <WhatsappShareButton url={shareUrl} title={title} onClick={handleShareAndDownload} className="mr-4">
+                <WhatsappShareButton url={shareUrl} title={title} onClick={() => handleDownload(cardRef)} className="mr-4">
                   <WhatsappIcon size={22} round />
                 </WhatsappShareButton>
-                <TwitterShareButton url={shareUrl} title={title} onClick={handleShareAndDownload} className="mr-4">
+                <TwitterShareButton url={shareUrl} title={title} onClick={() => handleDownload(cardRef)} className="mr-4">
                   <TwitterIcon size={22} round />
                 </TwitterShareButton>
               </div>
-              <button onClick={handleShareAndDownload} className="bg-[#31B057] text-white px-4 py-2 rounded">
+              <button onClick={() => handleDownload(cardRef)} className="bg-[#31B057] text-white px-4 py-2 rounded">
                 Download as PNG
               </button>
               <button onClick={handleShareToInstagramStory} className="bg-[#E1306C] text-white px-4 py-2 rounded mt-2">
@@ -251,7 +232,10 @@ export default function ExamResult({ params }: ExamResultProps) {
           </div>
         </div>  
         <div className="container mx-auto mt-8">
-          <CardDetailresult soalData={result.soalData} />
+          <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />
+        </div>
+        <div className="container mx-auto mt-8">
+        <CardDetailresult soalData={result.soalData} />
         </div>
       </div>
       {audioSrc && <audio src={audioSrc} autoPlay />}
