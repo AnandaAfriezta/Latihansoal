@@ -49,8 +49,7 @@ const DetailQuestions: React.FC<DetailQuestionsProps> = ({
 
   return (
     <div className="w-full flex flex-col justify-start">
-      <p className="text-gray-800 font-semibold mb-8">{konten_soal}</p>
-      <p>{JSON.stringify(jawaban)}</p>
+      <p className="text-gray-800 font-semibold mb-8 text-sm">{konten_soal}</p>
       <ol className="w-full flex flex-col">
         {jawaban.map((item) => (
           <DetailAnswer

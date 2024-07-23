@@ -66,7 +66,7 @@ const DetailAnswer: React.FC<AnswerObject> = ({
   return (
     <div className="w-full mb-2">
       <label
-        className={`flex items-center bg-white rounded-xl border border-[#999CA1] py-2 px-4 text-black justify-between w-full mb-2 ${isSelected ? 'selected' : ''}`}
+        className={`flex items-center bg-white rounded-xl border border-[#999CA1] py-2 px-4 text-black text-sm justify-between w-full mb-2 ${isSelected ? 'selected' : ''}`}
         onClick={handleClick}
       >
         <input

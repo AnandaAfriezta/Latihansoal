@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import DetailQuestions, { AnswerObject } from "@/app/components/detailQuestions";
 import Link from "next/link";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
+import EmojiFlagsRoundedIcon from "@mui/icons-material/EmojiFlagsRounded";
 import SubmitUjian from "@/app/components/modal/submitUjian";
 import Image from "next/image";
 import Cookies from "js-cookie";
@@ -24,16 +26,16 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   const [data, setData] = useState<any[]>([]);
   const [duration, setDuration] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
   const [namaLatihanSoal, setNamaLatihanSoal] = useState('');
   const [answeredCount, setAnsweredCount] = useState(0);
-  
-  // Memuat file suara
+  const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([]);
+
   const selectSound = new Audio("/sounds/select-sound.mp3");
 
-  const togglePopup = () => {
-    setIsPopupOpen(!isPopupOpen);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   useEffect(() => {
@@ -95,7 +97,8 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
 
   useEffect(() => {
     console.log("data change")
-  }, [data]);
+  }, [data])
+  
 
   const resetForm = () => {
     setData([]);
@@ -125,7 +128,6 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
   };
 
   const handleAnswerQuestion = () => {
-    // Menghitung berapa banyak soal yang sudah dijawab
     const newAnsweredCount = data.filter((soal: { jawaban: AnswerObject[] }) =>
       soal.jawaban.some(jawaban => jawaban.jawaban_user === true)
     ).length;
@@ -133,7 +135,17 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
     setAnsweredCount(newAnsweredCount);
   };
   
-  const answeredCountTest = data.filter((soal: { jawaban: any[]; }) => soal.jawaban.some(jawaban => jawaban.jawaban_user === true)).length
+  const handleFlagQuestion = (index: number) => {
+    setFlaggedQuestions((prevFlaggedQuestions) => {
+      if (prevFlaggedQuestions.includes(index)) {
+        return prevFlaggedQuestions.filter((item) => item !== index);
+      } else {
+        return [...prevFlaggedQuestions, index];
+      }
+    });
+  };
+
+  const answeredCountTest = data.filter((soal: { jawaban: any[]; }) => soal.jawaban.some(jawaban => jawaban.jawaban_user === true)).length;
 
   const answeredPercentage = (answeredCountTest / data.length) * 100;
 
@@ -149,7 +161,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
           style={{ boxShadow: "0 2px 0 0 #CACACA40" }}
         >
           <Link href="/">
-            <ArrowBackIosNewIcon className="text-black cursor-pointer" />
+            <ArrowBackIosNewRoundedIcon className="text-black cursor-pointer" />
           </Link>
           <div>
             <button
@@ -165,70 +177,103 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               alt="tab"
               width={20}
               height={20}
-              onClick={togglePopup}
+              onClick={toggleModal}
               className="cursor-pointer"
             />
-            {isPopupOpen && (
-              <div className="absolute top-15 right-10 bg-white shadow-md rounded-md flex flex-col p-2">
-                {Array.from({
-                  length: Math.ceil(data.length / 10),
-                }).map((_, rowIndex) => (
-                  <div key={rowIndex} className="flex mb-1">
-                    {Array.from({
-                      length: Math.min(10, data.length - rowIndex * 10),
-                    }).map((_, colIndex) => {
-                      const index = rowIndex * 10 + colIndex;
-                      const isAnswered = data[index]?.jawaban.some(
-                        (jawaban: any) => jawaban.jawaban_user === true
-                      );
-                      return (
-                        <button
-                          key={index}
-                          className="block hover:bg-gray-200 focus:bg-gray-200 rounded-md m-1"
-                          onClick={() => setStartIndex(index * itemsPerPage)}
-                          style={{
-                            backgroundColor: isAnswered ? "#9E62CE" : "white",
-                            color: isAnswered ? "white" : "black",
-                            width: '30px',  // fixed width
-                            height: '30px', // fixed height
-                            display: 'flex', // ensure proper alignment
-                            alignItems: 'center', // center vertically
-                            justifyContent: 'center', // center horizontally
-                          }}
-                        >
-                          {index + 1}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
+            {isModalOpen && (
+              <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className="absolute inset-0 bg-black opacity-50" onClick={toggleModal}></div>
+                <div className="bg-white shadow-md rounded-2xl flex flex-col p-4 z-10 max-h-[80vh] overflow-auto">
+                  {Array.from({
+                    length: Math.ceil(data.length / 10),
+                  }).map((_, rowIndex) => (
+                    <div key={rowIndex} className="flex mb-1">
+                      {Array.from({
+                        length: Math.min(10, data.length - rowIndex * 10),
+                      }).map((_, colIndex) => {
+                        const index = rowIndex * 10 + colIndex;
+                        const isAnswered = data[index]?.jawaban.some(
+                          (jawaban: any) => jawaban.jawaban_user === true
+                        );
+                        const isFlagged = flaggedQuestions.includes(index);
+                        return (
+                          <button
+                            key={index}
+                            className="block hover:bg-gray-200 focus:bg-gray-200 rounded-md m-2"
+                            onClick={() => {
+                              setStartIndex(index * itemsPerPage);
+                              toggleModal();
+                            }}
+                            style={{
+                              backgroundColor: isAnswered ? "#9E62CE" : "white",
+                              color: isAnswered ? "white" : "black",
+                              border: isFlagged ? '2px solid orange' : 'none',
+                              width: '40px',
+                              height: '35px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {index + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </div>
-        <div className="text-black font-semibold mb-3">
-          Soal {startIndex + 1} dari {data.length} (Sudah dijawab: {answeredCountTest})
+        <div className="text-black font-semibold flex w-full items-center justify-between mb-3">
+          <div className="text-sm">
+            Soal {startIndex + 1} dari {data.length}
+          </div>
+          <div>
+            <button
+              className={`flex items-center rounded-md p-1 text-xs ${flaggedQuestions.includes(startIndex) ? 'border-orange-500 border-2' : ''}`}
+              onClick={() => handleFlagQuestion(startIndex)}
+            >
+              Tandai Soal
+              <Image
+                src="/flag.svg"
+                alt="flag"
+                width={7}
+                height={7}
+                className="ms-2"
+              />
+            </button>
+          </div>
         </div>
         <div className="w-full bg-gray-200 h-2 rounded-md overflow-hidden mb-5">
           <div
             className="bg-green-500 h-full"
-            style={{ width: `${answeredPercentage}%` }}
+            style={{
+              width: `${answeredPercentage}%`,
+              transition: "width 0.5s ease-in-out",
+            }}
           />
         </div>
         <div className="flex flex-col gap-4 items-center w-full">
-        {data
-          .slice(startIndex, startIndex + itemsPerPage)
-          .map((item: any, index: number) => (
-            <DetailQuestions
-              key={index}
-              id_soal={item.id_soal}
-              konten_soal={item.konten_soal}
-              jawaban={item.jawaban}
-              id_latihan_soal={params.id_latihan_soal}
-              onAnswerQuestion={handleAnswerQuestion}
-              playSound={playSound} // Tambahkan prop playSound
-            />
-          ))}
+          <div
+            className="w-full overflow-y-auto px-3"
+            style={{ maxHeight: '58vh'}}
+          >
+            {data
+              .slice(startIndex, startIndex + itemsPerPage)
+              .map((item: any, index: number) => (
+                <DetailQuestions
+                  key={index}
+                  id_soal={item.id_soal}
+                  konten_soal={item.konten_soal}
+                  jawaban={item.jawaban}
+                  id_latihan_soal={params.id_latihan_soal}
+                  onAnswerQuestion={handleAnswerQuestion}
+                  playSound={playSound}
+                />
+              ))}
+          </div>
         </div>
 
         <div className="flex flex-col mt-4 gap-4 absolute bottom-8 right-0 left-0 w-full">
@@ -242,7 +287,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
                 boxShadow: "0 3px 0 0 #B1A6A6",
               }}
             >
-              &lt;
+              <ArrowBackIosNewRoundedIcon/>
             </button>
             <div>
               {!hasCompleted && (
@@ -265,7 +310,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
                 boxShadow: "0 3px 0 0 #B1A6A6",
               }}
             >
-              &gt;
+              <ArrowForwardIosRoundedIcon/>
             </button>
           </div>
         </div>
