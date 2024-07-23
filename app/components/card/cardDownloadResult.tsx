@@ -43,6 +43,12 @@ interface CardNilaiUserProps {
   id_latihan_soal: number;
 }
 
+function formatDuration(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = (seconds % 60);
+  return `${String(minutes).padStart(2, '0')} : ${String(remainingSeconds).padStart(2, '0')}`;
+}
+
 export const handleDownload = (ref: Ref<HTMLDivElement | null>) => {
   if (ref && typeof ref !== "function" && ref.current) {
     toPng(ref.current, { backgroundColor: 'white' })
@@ -94,7 +100,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
   }
 
   // Conditional class for circular card color
-  const circularCardClass100 = currentScore > 75 ? "bg-[#7CD795]/25" : "bg-[#FFBFBF]/25";
+  const circularCardClass100 = currentScore > 75 ? "bg-[#7CD795]/25" : "bg-[#FFBFBF]/50";
   const circularCardClass50 = currentScore > 75 ? "bg-[#4ECB71]/50" : "bg-[#FF5F5F]/50";
   const circularCardClass25 = currentScore > 75 ? "bg-[#4ECB71]" : "bg-[#FF5F5F]";
 
@@ -117,14 +123,15 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
   return (
     <div
       ref={ref}
-      className="bg-[url('/bgdownloadresult.png')] bg-cover w-[430px] h-[932px] flex flex-col justify-center items-center relative"
+      className="bg-[url('/bgdownloadresult.png')] bg-cover w-[430px] h-[932px] flex flex-col justify-center items-center gap-4"
     >
-      {/* New Title */}
-      <div className="text-center mt-8 mb-4">
-        <h3 className="text-[26px] text-[#FEFAEB] font-bold">Ayo Lihat</h3>
-        <h3 className="text-[26px] text-[#FEFAEB] font-bold">Pencapaianmu!</h3>
+      <div className="text-center">
+        <div className="text-3xl text-[#FEFAEB] font-bold flex flex-col">
+          <span>Ayo Lihat</span>
+          <span>Pencapaianmu!</span>
+        </div>
       </div>
-      <div className="w-[377px] h-[528px] bg-white rounded-2xl p-5 shadow-lg flex flex-col items-center relative mt-4"
+      <div className="w-[377px] h-[528px] bg-white rounded-2xl p-3 shadow-lg flex flex-col items-center justify-center"
         style={{
           boxShadow: `
             0px 20px 29px 0px rgba(255, 255, 255, 0.1),
@@ -135,14 +142,11 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
           `,
         }}   
       >
-        {/* Title at the top */}
-        <h2 className="font-nunito text-black text-center text-2xl mb-5 mt-0 font-bold">
-          {result.nama_latihansoal}
-        </h2>
-        {/* Content centered vertically */}
-        <div className="flex-grow flex flex-col items-center space-y-4">
-          {/* Circular Card */}
-          <div className="relative flex items-center">
+        <div className="flex flex-col items-center gap-4">
+          <h2 className="font-nunito text-black text-center text-xl font-bold p-1">
+            {result.nama_latihansoal}
+          </h2>
+          <div className="relative flex items-center p-1">
             <div className={`w-36 h-36 rounded-full ${circularCardClass100} flex items-center justify-center`}>
               <div className={`w-32 h-32 rounded-full ${circularCardClass50} flex items-center justify-center`}>
                 <div className={`w-28 h-28 rounded-full ${circularCardClass25} flex items-center justify-center`}>
@@ -153,12 +157,15 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
               </div>
             </div>
           </div>
-          <div className="w-[112px] h-[29px]w-full px-4 py-2 bg-[#F1EBFC] rounded-[20px]">
-          <div className="font-nunito text-[#515151] text-center text-lg">
-            @{username}
+          <div className="flex flex-col text-center p-1">
+            <div className="w-max bg-[#F1EBFC] rounded-[20px]">
+              <div className="font-nunito text-[#515151] text-center text-base  px-4 py-1">
+                @{username}
+              </div>
             </div>
           </div>
-          <div className="text-center">
+
+          <div className="flex flex-col text-center gap-2 p-2">
             <h3 className={`text-xl ${message.titleClass}`}>
               {message.title}
             </h3>
@@ -166,52 +173,65 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
               {message.description}
             </p>
           </div>
-          {/* Card for incorrect answers, correct answers, and total time */}
-          <div
-            className="w-[304px] h-[74px] bg-[#9E78E4] rounded-lg flex items-center justify-around px-4 py-3 text-white"
-            style={{ boxShadow: "0px 4px 0px 0px #8769BE" }}
-          >
-            <div className="flex flex-col items-center">
-            <div className="flex justify-between text-sm font-bold">
-                <Image
-                      src="/silangputih.svg"
-                      width={16}
-                      height={16}
-                      alt="Silang"
-                      className="mr-1"
-                    />
-                {result.jumlahSalah}
-              </div>
-              <div className="text-sm">
-                Soal Salah
-              </div>
-            </div>
-            <div className="w-px h-full bg-[#D0C1EC] mx-2"></div>
-            <div className="flex flex-col items-center">
-              <div className="flex justify-between text-sm font-bold">
-                <Image
+
+          <div className="flex flex-col text-center p-2">
+            <div
+              className="w-[304px] h-[74px] bg-[#9E78E4] rounded-lg flex items-center justify-around px-4 py-3 text-white text-sm"
+              style={{ boxShadow: "0px 4px 0px 0px #8769BE" }}
+            >
+              <div className="flex justify-center items-center my-4 font-semibold">
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <Image
                       src="/centangputih.svg"
-                      width={16}
-                      height={16}
+                      width={14}
+                      height={14}
                       alt="Benar"
-                      className="mr-1"
-                    />
-                {result.jumlahBenar}
+                      />                   
+                    <p>{result.jumlahBenar}</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Soal Benar</p>                          
+                  </div>
+                </div>
               </div>
-              <div className="text-sm">
-                Soal Benar
+              <div className="w-px h-full bg-[#D0C1EC] mx-2"></div>
+              <div className="flex justify-center items-center my-4 font-semibold">
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <Image
+                      src="/silangputih.svg"
+                      width={14}
+                      height={14}
+                      alt="Salah"
+                      />                   
+                    <p>{result.jumlahSalah}</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Soal Benar</p>                          
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="w-px h-full bg-[#D0C1EC] mx-2"></div>
-            <div className="flex flex-col items-center">
-              <div className="text-sm font-bold ">
-                {result.durasi}
-              </div>
-              <div className="text-sm">
-                Lama Waktu
+              <div className="w-px h-full bg-[#D0C1EC] mx-2"></div>
+              <div className="flex justify-center items-center my-4 font-semibold">
+                <div className="items-center justify-center">
+                  <div className="flex justify-center px-2 gap-2">
+                    <Image
+                      src="/timerputih.svg"
+                      width={14}
+                      height={14}
+                      alt="Durasi"
+                      />                   
+                    <p>{formatDuration(result.durasi)}</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <p>Lama Waktu</p>                          
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
