@@ -51,7 +51,7 @@ export default function EditBankSoal(props: Props) {
       setModal(false);
     } catch (error) {
       console.error(error);
-      setError(error.message);
+      // setError(error.message);
       setIsMutating(false);
     }
   }
