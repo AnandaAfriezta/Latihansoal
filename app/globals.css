@@ -18,7 +18,7 @@
   width: 20px;
   height: 20px;
   border-radius: 10px;
-  border: 0.6px solid #999ca1;
+  border: 2px solid #999ca1;
   outline: none;
   cursor: pointer;
   background-color: white;
@@ -28,6 +28,8 @@
 /* Style for checked state */
 .custom-radio:checked {
   background-color: white;
+  border: 2px solid #9E62CE;
+
 }
 
 /* Style for inner circle */
@@ -36,7 +38,7 @@
   display: block;
   width: 10px;
   height: 10px;
-  background-color: #999ca1;
+  background-color: #9E62CE;
   border-radius: 50%;
   position: absolute;
   top: 50%;

@@ -62,8 +62,13 @@ export const handleDownload = (ref: Ref<HTMLDivElement | null>) => {
 const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latihan_soal }, ref) => {
   const [result, setResult] = useState<Result | null>(null);
   const [currentScore, setCurrentScore] = useState<number>(0);
+  const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
+    // Retrieve username from cookies
+    const cookieUsername = Cookies.get("UserName") || "Unknown User";
+    setUsername(cookieUsername);
+
     getResult(id_latihan_soal)
       .then((data) => {
         if (data && data.data) {
@@ -147,7 +152,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
               marginBottom: "px"
             }}
           >
-           {currentScore} %
+            {currentScore} %
           </div>
           <div
             style={{
@@ -156,7 +161,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
               fontSize: "18px",
             }}
           >
-            Username: {result.username}
+            {username}
           </div>
         </div>
       </div>

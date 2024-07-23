@@ -91,9 +91,9 @@ export default function ExamResult({ params }: ExamResultProps) {
         if (data && data.data) {
           setResult(data.data);
           if (data.data.nilai_akhir > 80) {
-            setAudioSrc("/happysong.mp3");
+            setAudioSrc("/sounds/happyEffect.mp3");
           } else {
-            setAudioSrc("/badsong.mp3");
+            setAudioSrc("/sounds/sadEffect.mp3");
           }
 
           let score = 0;
