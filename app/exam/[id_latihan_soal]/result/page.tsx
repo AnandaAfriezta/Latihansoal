@@ -1,5 +1,4 @@
-"use client"; // Add this line at the top
-
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
@@ -89,7 +88,10 @@ export default function ExamResult({ params }: ExamResultProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const [audioSrc, setAudioSrc] = useState<string>("");
-  const cardRef = useRef<HTMLDivElement | null>(null); // New ref for CardNilaiUser
+  const cardRef = useRef<HTMLDivElement | null>(null); // Ref for CardNilaiUser
+  const [showCardNilaiUser, setShowCardNilaiUser] = useState(false); // State to control visibility
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const itemsPerPage = 10; // Number of items per page
 
   useEffect(() => {
     getResult(params.id_latihan_soal)
@@ -133,6 +135,17 @@ export default function ExamResult({ params }: ExamResultProps) {
     } catch (error) {
       console.error("Failed to generate image for Instagram story", error);
     }
+  };
+
+  const handleDownloadCard = async () => {
+    setShowCardNilaiUser(true);
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Briefly show the card
+    await handleDownload(cardRef); // Download the card image
+    setShowCardNilaiUser(false); // Hide the card again
+  };
+
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
   };
 
   if (!result) {
@@ -224,20 +237,19 @@ export default function ExamResult({ params }: ExamResultProps) {
 
             </div>
             <div className="mt-4 p-4 border rounded-lg text-center">
-              <h3 className="text-lg font-semibold mb-2">Share your result</h3>
-              <p className="mb-4">{title}</p>
-              <div className="flex justify-center mb-4">
-                <FacebookShareButton url={shareUrl} quote={title} onClick={() => handleDownload(cardRef)} className="mr-4">
+              <h3 className="text-lg font-semibold mb-4">Bagikan hasilmu:</h3>
+              <div className="flex justify-center">
+                <FacebookShareButton url={shareUrl} quote={title} className="mr-4">
                   <FacebookIcon size={22} round />
                 </FacebookShareButton>
-                <WhatsappShareButton url={shareUrl} title={title} onClick={() => handleDownload(cardRef)} className="mr-4">
+                <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="mr-4">
                   <WhatsappIcon size={22} round />
                 </WhatsappShareButton>
-                <TwitterShareButton url={shareUrl} title={title} onClick={() => handleDownload(cardRef)} className="mr-4">
+                <TwitterShareButton url={shareUrl} title={title} className="mr-4">
                   <TwitterIcon size={22} round />
                 </TwitterShareButton>
               </div>
-              <button onClick={() => handleDownload(cardRef)} className="bg-[#31B057] text-white px-4 py-2 rounded">
+              <button onClick={handleDownloadCard} className="bg-[#31B057] text-white px-4 py-2 rounded">
                 Download as PNG
               </button>
               <button onClick={handleShareToInstagramStory} className="bg-[#E1306C] text-white px-4 py-2 rounded mt-2">
@@ -247,10 +259,64 @@ export default function ExamResult({ params }: ExamResultProps) {
           </div>
         </div>  
         <div className="w-full max-w-screen-md mx-auto px-4">
+        <div className="relative">
+        <Image
+          src="/tab.png"
+          alt="tab"
+          width={20}
+          height={20}
+          onClick={toggleModal}
+          className="cursor-pointer"
+        />
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="absolute inset-0 bg-black opacity-50" onClick={toggleModal}></div>
+            <div className="bg-white shadow-md rounded-2xl flex flex-col p-4 z-10 max-h-[80vh] overflow-auto">
+              {Array.from({
+                length: Math.ceil(result.soalData.length / itemsPerPage),
+              }).map((_, rowIndex) => (
+                <div key={rowIndex} className="flex mb-1">
+                  {Array.from({
+                    length: Math.min(itemsPerPage, result.soalData.length - rowIndex * itemsPerPage),
+                  }).map((_, colIndex) => {
+                    const index = rowIndex * itemsPerPage + colIndex;
+                    const isAnswered = result.soalData[index]?.jawaban.some(
+                      (jawaban: any) => jawaban.jawaban_user === true
+                    );
+                    return (
+                      <Link
+                        key={index}
+                        href={`#question-${index + 1}`}
+                        // scroll={false}
+                        onClick={toggleModal}
+                      >
+                        <div
+                          className="block hover:bg-gray-200 focus:bg-gray-200 rounded-md m-2"
+                          style={{
+                            backgroundColor: isAnswered ? "#9E62CE" : "white",
+                            color: isAnswered ? "white" : "black",
+                            width: '40px',
+                            height: '35px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {index + 1}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
           <CardDetailresult soalData={result.soalData} />
         </div>
         <div className="w-full max-w-screen-md mx-auto px-4">
-          <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />
+          {showCardNilaiUser && <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />}
         </div>
       </div>
       {audioSrc && <audio src={audioSrc} autoPlay />}

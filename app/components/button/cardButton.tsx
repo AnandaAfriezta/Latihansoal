@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
-const CardButton: React.FC<{ id_latihan_soal: number }> = ({
+const  CardButton: React.FC<{ id_latihan_soal: number }> = ({
   id_latihan_soal,
 }) => {
   const router = useRouter();

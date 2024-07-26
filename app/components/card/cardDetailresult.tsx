@@ -26,8 +26,9 @@ export default function CardDetailresult({ soalData }: Props) {
 
   return (
     <div className="w-full mb-8">
-      {soalData.map((soal) => (
+      {soalData.map((soal, index) => (
         <div
+          id={`question-${index + 1}`}
           key={soal.id_soal}
           className="bg-white rounded-lg border border-gray-300 p-4 mb-8"
         >

@@ -43,6 +43,9 @@ export default function CardLatsol(props: Data) {
           <p className="text-[#A8A3A3] font-regular text-lg mr-3">
             {props.jumlah_soal} Soal
           </p>
+          <p className="text-[#A8A3A3] font-regular text-lg mr-3">
+            {props.status}
+          </p>
           {props.tag.map((tag: Tag, index: number) => (
             <p
               key={index}
