@@ -21,18 +21,17 @@ import { toPng } from "html-to-image";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-async function getResult(id_latihan_soal: number) {
+async function getResult(idEnrollment: number) {
   try {
     const token = Cookies.get("UserToken");
     if (!token) {
       throw new Error("User data not found. Please login again.");
     }
 
-    const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/finish`, {
+    const res = await fetch(`${apiUrl}/ujian/${idEnrollment}/finish`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${token}`,
       },
     });
     if (!res.ok) {
@@ -48,7 +47,7 @@ async function getResult(id_latihan_soal: number) {
 
 interface ExamResultProps {
   params: {
-    id_latihan_soal: number;
+    idEnrollment: number;
   };
 }
 
@@ -94,7 +93,7 @@ export default function ExamResult({ params }: ExamResultProps) {
   const itemsPerPage = 10; // Number of items per page
 
   useEffect(() => {
-    getResult(params.id_latihan_soal)
+    getResult(params.idEnrollment)
       .then((data) => {
         if (data && data.data) {
           setResult(data.data);
@@ -117,7 +116,7 @@ export default function ExamResult({ params }: ExamResultProps) {
         }
       })
       .catch((error) => console.error(error));
-  }, [params.id_latihan_soal]);
+  }, [params.idEnrollment]);
 
   const handleShareToInstagramStory = async () => {
     if (resultRef.current === null) {
@@ -316,7 +315,7 @@ export default function ExamResult({ params }: ExamResultProps) {
           <CardDetailresult soalData={result.soalData} />
         </div>
         <div className="w-full max-w-screen-md mx-auto px-4">
-          {showCardNilaiUser && <CardNilaiUser id_latihan_soal={params.id_latihan_soal} ref={cardRef} />}
+          {showCardNilaiUser && <CardNilaiUser idEnrollment={params.idEnrollment} ref={cardRef} />}
         </div>
       </div>
       {audioSrc && <audio src={audioSrc} autoPlay />}

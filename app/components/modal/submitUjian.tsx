@@ -22,6 +22,7 @@ const SubmitUjian: React.FC<Props> = ({
   const [modal, setModal] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
   const [showIncompleteWarning, setShowIncompleteWarning] = useState(false);
+  const [idEnrollment, setIdEnrollment] = useState<string | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -55,6 +56,9 @@ const SubmitUjian: React.FC<Props> = ({
       if (!res.ok) {
         throw new Error("Failed to submit answer.");
       }
+
+      const result = await res.json();
+      const id_enrollment = result.id_enrollment;
 
       setModal(false);
     } catch (error: any) {
@@ -108,7 +112,7 @@ const SubmitUjian: React.FC<Props> = ({
               Close
             </button>
             {!isMutating ? (
-              <Link href={`/exam/${id_latihan_soal}/result`}>
+              <Link href={`/result/${idEnrollment}`}>
                 <button
                   type="button"
                   className="bg-[#31B057] px-3 py-1 rounded-md text-white font-semibold text-md"

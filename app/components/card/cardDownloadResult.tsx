@@ -5,14 +5,14 @@ import Image from "next/image";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-async function getResult(id_latihan_soal: number) {
+async function getResult(idEnrollment: number) {
   try {
     const token = Cookies.get("UserToken");
     if (!token) {
       throw new Error("User data not found. Please login again.");
     }
 
-    const res = await fetch(`${apiUrl}/ujian/${id_latihan_soal}/finish`, {
+    const res = await fetch(`${apiUrl}/ujian/${idEnrollment}/finish`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ interface Result {
 }
 
 interface CardNilaiUserProps {
-  id_latihan_soal: number;
+  idEnrollment: number;
 }
 
 function formatDuration(seconds: number): string {
@@ -66,7 +66,7 @@ export const handleDownload = (ref: Ref<HTMLDivElement | null>) => {
   }
 };
 
-const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latihan_soal }, ref) => {
+const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ idEnrollment }, ref) => {
   const [result, setResult] = useState<Result | null>(null);
   const [currentScore, setCurrentScore] = useState<number>(0);
   const [username, setUsername] = useState<string>("");
@@ -75,7 +75,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
     const cookieUsername = Cookies.get("UserName") || "Unknown User";
     setUsername(cookieUsername);
 
-    getResult(id_latihan_soal)
+    getResult(idEnrollment)
       .then((data) => {
         if (data && data.data) {
           setResult(data.data);
@@ -93,7 +93,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ id_latih
         }
       })
       .catch((error) => console.error(error));
-  }, [id_latihan_soal]);
+  }, [idEnrollment]);
 
   if (!result) {
     return <div>Loading...</div>;
