@@ -171,6 +171,7 @@ const ExamDetail: React.FC<DetailUjianProps> = ({ params }) => {
               {formatTime(remainingTime)}
             </button>
           </div>
+          {/* <div>Pembahasan</div> */}
           <div className="relative">
             <Image
               src="/tab.png"

@@ -7,16 +7,10 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function getResult(idEnrollment: number) {
   try {
-    const token = Cookies.get("UserToken");
-    if (!token) {
-      throw new Error("User data not found. Please login again.");
-    }
-
     const res = await fetch(`${apiUrl}/ujian/${idEnrollment}/finish`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${token}`,
       },
     });
     if (!res.ok) {
@@ -72,22 +66,24 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ idEnroll
   const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
-    const cookieUsername = Cookies.get("UserName") || "Unknown User";
-    setUsername(cookieUsername);
-
     getResult(idEnrollment)
       .then((data) => {
         if (data && data.data) {
           setResult(data.data);
-
-          let score = 0;
-          const interval = setInterval(() => {
-            score += 1;
-            setCurrentScore(score);
-            if (score >= data.data.nilai_akhir) {
-              clearInterval(interval);
-            }
-          }, 20);
+  
+          const targetScore = data.data.nilai_akhir;
+          if (targetScore === 0) {
+            setCurrentScore(0);
+          } else {
+            let score = 0;
+            const interval = setInterval(() => {
+              score += 1;
+              setCurrentScore(score);
+              if (score >= targetScore) {
+                clearInterval(interval);
+              }
+            }, 20);
+          }
         } else {
           console.error("No data received or incorrect data structure");
         }
@@ -160,7 +156,7 @@ const CardNilaiUser = forwardRef<HTMLDivElement, CardNilaiUserProps>(({ idEnroll
           <div className="flex flex-col text-center p-1">
             <div className="w-max bg-[#F1EBFC] rounded-[20px]">
               <div className="font-nunito text-[#515151] text-center text-base  px-4 py-1">
-                @{username}
+                @{result.username}
               </div>
             </div>
           </div>
